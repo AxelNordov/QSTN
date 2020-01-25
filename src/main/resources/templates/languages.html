@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>QSTN (Question)</title>
+    <link rel="icon" type="image/png" href="/favicon.png"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+</head>
+<body>
+<div th:insert="~{parts/navbar :: navbar}"></div>
+
+<div class="container">
+    <form th:action="@{/languages/add}" method="post">
+        <div class="form-row my-2">
+            <div class="col-11">
+                <input type="text" class="form-control" name="name" placeholder="Название языка">
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary btn-block">Новый</button>
+            </div>
+        </div>
+    </form>
+
+
+    <div>
+        <table class="table table-hover table-sm">
+            <thead>
+            <tr>
+                <td>
+                    <div class="row">
+                        <div class="col-11">Название языка</div>
+                        <div class="col-1">
+
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="language :${languages}">
+                <td>
+                    <div class="row">
+                        <div class="col-11" th:text="${language.name}"></div>
+                        <div class="col-1">
+                            <a th:href="@{'/languages/editLanguage/' + ${language.id}}"
+                               class="badge badge-light">E</a>
+                            <a th:href="@{'/languages/removeLanguage/' + ${language.id}}"
+                               class="badge badge-light">X</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

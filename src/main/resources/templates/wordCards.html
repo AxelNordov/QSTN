@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>QSTN (Question)</title>
+    <link rel="icon" type="image/png" href="/favicon.png"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+</head>
+<body>
+<div th:insert="~{parts/navbar :: navbar}"></div>
+
+<div class="container">
+    <form th:action="@{/wordCards/add}" method="post">
+        <div class="form-row my-2">
+            <div class="col-2">
+                <input type="text" class="form-control" name="text" placeholder="Новое определение">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="translated" placeholder="Новое значение">
+            </div>
+            <div class="col-1">
+                <select class="form-control" name="languageId">
+                    <option selected>Язык...</option>
+                    <option th:each="language :${languages}" th:value="${language.id}"
+                            th:text="${language.name}"></option>
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary btn-block">Новый</button>
+            </div>
+        </div>
+    </form>
+    <form th:action="@{/wordCards}" method="get">
+        <div class="form-row my-2">
+            <div class="col-2">
+                <input type="text" class="form-control" name="filterText" placeholder="">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="filterTranslated" placeholder="">
+            </div>
+            <div class="col-1">
+                <select class="form-control" name="filterLanguageId">
+                    <option value="" selected>Все</option>
+                    <option th:each="language :${languages}" th:value="${language.id}"
+                            th:text="${language.name}"></option>
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-light btn-block">Фильтр</button>
+            </div>
+        </div>
+    </form>
+
+    <div>
+        <table class="table table-hover table-sm">
+            <thead>
+            <tr>
+                <td>
+                    <div class="row">
+                        <div class="col-2 mx-0">Определение</div>
+                        <div class="col mx-0">Значение</div>
+                        <div class="col-1 mx-1">Язык</div>
+                        <div class="col-1 mx-1"></div>
+                    </div>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="i :${#numbers.sequence(wordCards.size() - 1, 0, -1)}" th:with="wordCard=${wordCards[i]}">
+                <td>
+                    <div class="row">
+                        <div class="col-2 mx-0" th:text="${wordCard.text}"></div>
+                        <div class="col mx-0" th:text="${wordCard.translated}"></div>
+                        <div class="col-1 mx-1" th:text="${wordCard.language.name}"></div>
+                        <div class="col-1 mx-1" style="text-align: center">
+                            <a th:href="@{'/wordCards/editWordCard/' + ${wordCard.id}}"
+                               class="badge badge-light">E</a>
+
+                            <a th:href="@{'/wordCards/removeWordCard/' + ${wordCard.id}}"
+                               class="badge badge-light">X</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
