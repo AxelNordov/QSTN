@@ -1,26 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>QSTN (Question)</title>
-    <link rel="icon" type="image/png" href="/favicon.png"/>
-    <meta charset="utf-8">
-
+<head th:replace="Parts/base :: common_header(~{::title},~{::link})">
+    <title>PlayCards</title>
     <link rel="stylesheet" href="/card3d.css">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
 </head>
 <body>
 
-<div class="wrap">
-    <div class="card3d">
-        <div class="front"><span>Front</span></div>
-        <div class="back"><span>Back</span></div>
+<div class="wrap3d">
+    <div class="card3d" >
+        <div class="back3d"><span th:text="${randomWordCard.translated}"></span></div>
+        <div class="front3d"><span th:text="${randomWordCard.text}"></span></div>
     </div>
 </div>
 
-<div th:insert="~{parts/navbar :: navbar}"></div>
+<th:block th:insert="~{Parts/base :: navbar}" />
 
 </body>
 </html>

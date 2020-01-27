@@ -12,8 +12,8 @@ import ua.axel.qstn.domain.WordCard;
 import ua.axel.qstn.repository.LanguageRepo;
 import ua.axel.qstn.repository.WordCardRepo;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Controller
@@ -84,8 +84,18 @@ public class MainController {
     }
 
     @GetMapping("/playCards")
-    public String playCards() {
+    public String playCards(Model model) {
+        Random rand = new Random();
+        List<WordCard> wordCardRepoAll = (List<WordCard>) wordCardRepo.findAll();
+        WordCard randomWordCard = wordCardRepoAll.get(rand.nextInt(wordCardRepoAll.size()));
+        model.addAttribute("randomWordCard", randomWordCard);
         return "playCards";
+    }
+
+    @GetMapping("/playQuiz")
+    public String playQuiz(Model model) {
+
+        return "playQuiz";
     }
 
     @GetMapping("/languages")

@@ -2,13 +2,12 @@
 /*    font-family: sans-serif;*/
 /*}*/
 
-.wrap {
+.wrap3d {
     position: absolute;
     width: 100%;
     height: 100%;
     left: 0;
     top: 0;
-    /*background-color: #BBDEFB;*/
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,12 +15,15 @@
 
 .card3d {
     width: 50%;
-    height: 50%;
+    height: 33%;
     position: relative;
     perspective: 1500px;
 }
 
-.front, .back {
+.front3d, .back3d {
+    padding: 20px;
+    font-size: xx-large;
+    text-align: center;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -33,20 +35,23 @@
     transition: 1s;
     backface-visibility: hidden;
     border-radius: 10px;
+
 }
 
-.front {
+.front3d {
     background-color: #EEE;
 }
 
-.back {
+.back3d {
     background-color: #BDBDBD;
     transform: rotateX(180deg);
 
 }
-.card3d:hover .front {
+
+.card3d:hover .front3d {
     transform: rotateX(180deg);
 }
-.card3d:hover .back {
+
+.card3d:hover .back3d {
     transform: rotateX(360deg);
 }

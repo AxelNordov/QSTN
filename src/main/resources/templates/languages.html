@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>QSTN (Question)</title>
-    <link rel="icon" type="image/png" href="/favicon.png"/>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+<head th:replace="Parts/base :: common_header(~{::title},~{})">
+    <title>QSTN Languages</title>
 </head>
 <body>
-<div th:insert="~{parts/navbar :: navbar}"></div>
+<th:block th:insert="~{Parts/base :: navbar}" />
 
 <div class="container">
     <form th:action="@{/languages/add}" method="post">

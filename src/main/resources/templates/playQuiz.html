@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="Parts/base :: common_header(~{::title},~{})">
-    <title>QSTN Main</title>
+    <title>QSTN PlayQuiz</title>
 </head>
 <body>
 <div style="
@@ -14,9 +14,8 @@
     justify-content: center;
     align-items: center;
 ">
-    <div class="h4 text-center" >Какая-то очень красивая картинка <br>и очень полезная информация</div>
+    <div class="h4 text-center">Место для тестов</div>
 </div>
-<th:block th:insert="~{Parts/base :: navbar}" />
-
+<th:block th:insert="~{Parts/base :: navbar}"/>
 </body>
 </html>
