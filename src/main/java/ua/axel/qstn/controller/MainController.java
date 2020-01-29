@@ -16,6 +16,8 @@ import ua.axel.qstn.repository.WordCardRepo;
 import ua.axel.qstn.service.QuizService;
 import ua.axel.qstn.service.WordCardService;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -134,8 +136,15 @@ public class MainController {
 
     @GetMapping("/playWords")
     public String playCards(Model model) {
-        List<WordCard> wordCardRepoAll = wordCardRepo.findAll();
-        WordCard randomWordCard = WordCardService.getRandomWordCard(wordCardRepoAll);
+        List<WordCard> wordCardsAll = wordCardRepo.findAll();
+        WordCard randomWordCard = null;
+        if (!wordCardsAll.isEmpty()) {
+            randomWordCard = WordCardService.getRandomWordCard(wordCardsAll);
+        } else {
+            randomWordCard = new WordCard();
+            randomWordCard.setText("No cards yet!");
+            randomWordCard.setTranslated("Карт не завезли пока!");
+        }
         model.addAttribute("randomWordCard", randomWordCard);
         return "playWords";
     }
@@ -164,7 +173,15 @@ public class MainController {
 
     @GetMapping("/playQuizzes")
     public String playQuiz(Model model) {
-        Quiz quiz = QuizService.quizFromWordCard(wordCardRepo.findAll(), WordCardService.getRandomWordCard(wordCardRepo.findAll()));
+        List<WordCard> wordCardsAll = wordCardRepo.findAll();
+        Quiz quiz = null;
+        if (wordCardsAll.size() >= 4) {
+            quiz = QuizService.quizFromWordCard(wordCardsAll, WordCardService.getRandomWordCard(wordCardsAll));
+        } else {
+            quiz = new Quiz();
+            quiz.setQuestion("Not enough cards yet for autoquiz!");
+            quiz.setVariants(new ArrayList<>(Arrays.asList("Количества", "карточек", "пока", "не достаточно")));
+        }
         model.addAttribute("quiz", quiz);
         return "playQuizzes";
     }
