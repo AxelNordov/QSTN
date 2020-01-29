@@ -21,12 +21,47 @@ import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
-    @Autowired
+
+//    //Field-based dependency injection (Внедрение через поле)
+//    @Autowired
+//    private WordCardRepo wordCardRepo;
+//    @Autowired
+//    private QuizRepo quizRepo;
+//    @Autowired
+//    private LanguageRepo languageRepo;
+
+//    //Constructor-based dependency injection (Внедрение через конструктор)
+//    private final WordCardRepo wordCardRepo;
+//    private final QuizRepo quizRepo;
+//    private final LanguageRepo languageRepo;
+//
+//    @Autowired
+//    public MainController(WordCardRepo wordCardRepo, QuizRepo quizRepo, LanguageRepo languageRepo) {
+//        this.wordCardRepo = wordCardRepo;
+//        this.quizRepo = quizRepo;
+//        this.languageRepo = languageRepo;
+//    }
+
+    //Setter-based dependency injection (Внедрение через сеттер)
     private WordCardRepo wordCardRepo;
-    @Autowired
     private QuizRepo quizRepo;
-    @Autowired
     private LanguageRepo languageRepo;
+
+    @Autowired
+    public void setWordCardRepo(WordCardRepo wordCardRepo) {
+        this.wordCardRepo = wordCardRepo;
+    }
+
+    @Autowired
+    public void setQuizRepo(QuizRepo quizRepo) {
+        this.quizRepo = quizRepo;
+    }
+
+    @Autowired
+    public void setLanguageRepo(LanguageRepo languageRepo) {
+        this.languageRepo = languageRepo;
+    }
+
 
     @GetMapping("/")
     String index() {
@@ -97,12 +132,12 @@ public class MainController {
         return "wordCards";
     }
 
-    @GetMapping("/playWordCards")
+    @GetMapping("/playWords")
     public String playCards(Model model) {
         List<WordCard> wordCardRepoAll = wordCardRepo.findAll();
         WordCard randomWordCard = WordCardService.getRandomWordCard(wordCardRepoAll);
         model.addAttribute("randomWordCard", randomWordCard);
-        return "playWordCards";
+        return "playWords";
     }
 
     @GetMapping("/quizCards")
