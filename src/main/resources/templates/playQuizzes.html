@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Parts/base :: common_header(~{::title},~{})">
+    <title>QSTN PlayQuizzes</title>
+</head>
+<body>
+
+<th:block th:insert="~{Parts/base :: navbar}"/>
+
+<div class="container">
+    <div class="alert alert-primary" th:text="${quiz.question}"></div>
+    <div class="alert alert-secondary" th:text="${quiz.variants[0]}"></div>
+    <div class="alert alert-secondary" th:text="${quiz.variants[1]}"></div>
+    <div class="alert alert-secondary" th:text="${quiz.variants[2]}"></div>
+    <div class="alert alert-secondary" th:text="${quiz.variants[3]}"></div>
+
+</div>
+
+<th:block th:insert="~{Parts/base :: jslinks}"/>
+</body>
+</html>

@@ -3,10 +3,11 @@ package ua.axel.qstn.domain;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 
 @Data
 @Entity
-public class WordCard {
+public class Quiz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,8 +16,9 @@ public class WordCard {
     @ManyToOne
     private Language language;
 
-    private String text;
-    private String translated;
+    private String question;
+    private ArrayList<String> variants;
+    private ArrayList<Boolean> rightVariants;
+    private Boolean oneRightVariant;
 
 }
-

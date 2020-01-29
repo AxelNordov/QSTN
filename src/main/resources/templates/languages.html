@@ -9,9 +9,9 @@
 <div class="container">
     <form th:action="@{/languages/add}" method="post">
         <div class="form-row my-2">
-            <div class="col-11">
+            <label class="col-11">
                 <input type="text" class="form-control" name="name" placeholder="Название языка">
-            </div>
+            </label>
             <div class="col-1">
                 <button type="submit" class="btn btn-primary btn-block">Новый</button>
             </div>
@@ -52,5 +52,6 @@
     </div>
 </div>
 
+<th:block th:insert="~{Parts/base :: jslinks}" />
 </body>
 </html>

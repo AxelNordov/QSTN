@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--<head th:replace="Parts/base :: common_header(~{::title},~{})">-->
 <head th:replace="Parts/base :: common_header(~{::title},~{})">
     <title>QSTN WordCards</title>
+<!--TODO Победить модальные окна-->
+
+<!--    <script type="text/javascript" src="../myModal.js"></script>-->
 </head>
 <body>
-<th:block th:insert="~{Parts/base :: navbar}" />
+<th:block th:insert="~{Parts/base :: navbar}"/>
 
 <div class="container">
     <form th:action="@{/wordCards/add}" method="post">
         <div class="form-row my-2">
-            <div class="col-2">
+            <label class="col-2">
                 <input type="text" class="form-control" name="text" placeholder="Новое определение">
-            </div>
-            <div class="col">
+            </label>
+            <label class="col">
                 <input type="text" class="form-control" name="translated" placeholder="Новое значение">
-            </div>
+            </label>
             <div class="col-1">
                 <select class="form-control" name="languageId">
-                    <option selected>Язык...</option>
+                    <option value="">Язык...</option>
                     <option th:each="language :${languages}" th:value="${language.id}"
                             th:text="${language.name}"></option>
                 </select>
@@ -27,17 +31,18 @@
             </div>
         </div>
     </form>
+
     <form th:action="@{/wordCards}" method="get">
         <div class="form-row my-2">
-            <div class="col-2">
-                <input type="text" class="form-control" name="filterText" placeholder="">
-            </div>
-            <div class="col">
-                <input type="text" class="form-control" name="filterTranslated" placeholder="">
-            </div>
+            <label class="col-2">
+                <input type="text" class="form-control" name="filterText" placeholder="" th:value="${filterText}">
+            </label>
+            <label class="col">
+                <input type="text" class="form-control" name="filterTranslated" placeholder="" th:value="${filterTranslated}">
+            </label>
             <div class="col-1">
-                <select class="form-control" name="filterLanguageId">
-                    <option value="" selected>Все</option>
+                <select class="form-control" name="filterLanguageId" id="filterLanguage">
+                    <option value="">Все</option>
                     <option th:each="language :${languages}" th:value="${language.id}"
                             th:text="${language.name}"></option>
                 </select>
@@ -70,8 +75,10 @@
                         <div class="col mx-0" th:text="${wordCard.translated}"></div>
                         <div class="col-1 mx-1" th:text="${wordCard.language.name}"></div>
                         <div class="col-1 mx-1" style="text-align: center">
-                            <a th:href="@{'/wordCards/editWordCard/' + ${wordCard.id}}"
-                               class="badge badge-light">E</a>
+                            <!--                            <a th:href="@{'/wordCards/editWordCard/' + ${wordCard.id}}"-->
+                            <!--                               class="badge badge-light">E</a>-->
+                            <a class="badge badge-light" data-toggle="modal" data-target="#myModal"
+                               th:attr="data-wordCard-id=${wordCard.id}">E</a>
 
                             <a th:href="@{'/wordCards/removeWordCard/' + ${wordCard.id}}"
                                class="badge badge-light">X</a>
@@ -83,6 +90,63 @@
         </table>
     </div>
 </div>
+
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit user</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="textInput">First name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="textInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="traslatedInput">Last name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="traslatedInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="languageInput">E-mail</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="languageInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-10">
+                            <button type="submit" class="btn btn-default">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:insert="~{Parts/base :: jslinks}" />
+
+<script th:inline="javascript">
+    var filteredLanguage = [[${filterLanguageId}]];
+    var elems = document.getElementById("filterLanguage").options;
+    for (var i = 0; i < elems.length; i++) {
+        if (elems[i].value === filteredLanguage) {
+            elems[i].selected = "selected";
+        }
+    }
+</script>
+
+<!--TODO При выборе фильтра ощищать другие поля фильтра-->
 
 </body>
 </html>

@@ -6,9 +6,10 @@ import ua.axel.qstn.domain.WordCard;
 import java.util.List;
 
 public interface WordCardRepo extends CrudRepository<WordCard, Long> {
-    List<WordCard> findByLanguage(Long languageId);
-    List<WordCard> findByTextContaining(String valueOf);
-    List<WordCard> findByTranslatedContaining(String filterTranslated);
+    @Override
+    List<WordCard> findAll();
 
-    List<WordCard> findByLanguageId(Long filterLanguageId);
+    List<WordCard> findByTextContaining(String text);
+    List<WordCard> findByTranslatedContaining(String translated);
+    List<WordCard> findByLanguageId(Long languageId);
 }

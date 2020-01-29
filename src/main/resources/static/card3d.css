@@ -55,3 +55,11 @@
 .card3d:hover .back3d {
     transform: rotateX(360deg);
 }
+
+/*.card3d:active .front3d {*/
+/*    transform: rotateX(180deg);*/
+/*}*/
+
+/*.card3d:active .back3d {*/
+/*    transform: rotateX(360deg);*/
+/*}*/

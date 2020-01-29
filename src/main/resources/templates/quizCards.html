@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--<head th:replace="Parts/base :: common_header(~{::title},~{})">-->
+<head th:replace="Parts/base :: common_header(~{::title},~{})">
+    <title>QSTN Quizes</title>
+</head>
+<body>
+<th:block th:insert="~{Parts/base :: navbar}"/>
+
+<div class="container">
+
+    <div class="form-row my-2">
+        <div class="col-11"></div>
+        <div class="col-1">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#quizAddModal">New</button>
+        </div>
+    </div>
+
+    <form th:action="@{/quizCards}" method="get">
+        <div class="form-row my-2">
+            <label class="col-10">
+                <input type="text" class="form-control" name="filterText" placeholder="" th:value="${filterQuestion}">
+            </label>
+            <div class="col-1">
+                <select class="form-control" name="filterLanguageId" id="filterLanguage">
+                    <option value="">Все</option>
+                    <option th:each="language :${languages}" th:value="${language.id}"
+                            th:text="${language.name}"></option>
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-light btn-block">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    <div>
+        <table class="table table-hover table-sm">
+            <thead>
+            <tr>
+                <td>
+                    <div class="row">
+                        <div class="col-10 mx-0">Question</div>
+                        <div class="col-1 mx-1">Lang</div>
+                        <div class="col-1 mx-1"></div>
+                    </div>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="i :${#numbers.sequence(quizzes.size() - 1, 0, -1)}" th:with="quiz=${quizzes[i]}">
+                <td>
+                    <div class="row">
+                        <div class="col-2 mx-0" th:text="${quiz.question}"></div>
+                        <div class="col-1 mx-1" th:text="${quiz.language.name}"></div>
+                        <div class="col-1 mx-1" style="text-align: center">
+                            <!--                            <a th:href="@{'/quizzes/editWordCard/' + ${quiz.id}}"-->
+                            <!--                               class="badge badge-light">E</a>-->
+                            <a class="badge badge-light" data-toggle="modal" data-target="#myModal"
+                               th:attr="data-quiz-id=${quiz.id}">E</a>
+
+                            <a th:href="@{'/quizzes/removeWordCard/' + ${quiz.id}}"
+                               class="badge badge-light">X</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<!--<div id="quizAddModal" class="modal fade" role="dialog">-->
+<div class="modal fade" id="quizAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New quiz</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col">Question</label>
+                        <label class="col"><input type="text" class="form-control" id="questionInput"/></label>
+                    </div>
+                    <div class="btn-group-vertical" data-toggle="buttons" id="myRadio">
+                        <label class="col">Variants</label>
+
+                        <!--                        <div class="btn-group-vertical" data-toggle="buttons">-->
+                        <!--                            <div>-->
+                        <!--                                <label class="btn btn-light">-->
+                        <!--                                    <input type="radio" name="options" id="option1" autocomplete="off">-->
+                        <!--                                </label>-->
+                        <!--                                <div class="form-control">-->
+                        <!--                                    <input type="text" aria-label="Checkbox for following text input">-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                            <label class="btn btn-light">-->
+                        <!--                                <input type="radio" name="options" id="option2" autocomplete="off">-->
+                        <!--                            </label>-->
+                        <!--                            <label class="btn btn-light">-->
+                        <!--                                <input type="radio" name="options" id="option3" autocomplete="off">-->
+                        <!--                            </label>-->
+                        <!--                        </div>-->
+
+                        <div class="input-group col mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="radio" aria-label="Checkbox for following text input">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with radio">
+                        </div>
+                        <div class="input-group col mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="radio" aria-label="Checkbox for following text input">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with radio">
+                        </div>
+                        <div class="input-group col mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="radio" aria-label="Checkbox for following text input">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with radio">
+                        </div>
+                        <div class="input-group col mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="radio" aria-label="Checkbox for following text input">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with radio">
+                        </div>
+                        <div class="input-group col mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="radio" aria-label="Checkbox for following text input">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with radio">
+                        </div>
+                        <div class="input-group col mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="radio" aria-label="Checkbox for following text input">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with radio">
+                        </div>
+                        <div class="input-group col mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="radio" aria-label="Checkbox for following text input">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with radio">
+                        </div>
+                        <div class="input-group col mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="radio" aria-label="Checkbox for following text input">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with radio">
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-10">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:insert="~{Parts/base :: jslinks}"/>
+
+<script th:inline="javascript">
+    var filteredLanguage = [[${filterLanguageId}]];
+    var elems = document.getElementById("filterLanguage").options;
+    for (var i = 0; i < elems.length; i++) {
+        if (elems[i].value === filteredLanguage) {
+            elems[i].selected = "selected";
+        }
+    }
+</script>
+
+<script>
+
+
+</script>
+
+<!--TODO При выборе фильтра ощищать другие поля фильтра-->
+
+</body>
+</html>
