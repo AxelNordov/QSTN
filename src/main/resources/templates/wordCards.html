@@ -3,16 +3,38 @@
 <!--<head th:replace="Parts/base :: common_header(~{::title},~{})">-->
 <head th:replace="Parts/base :: common_header(~{::title},~{})">
     <title>QSTN WordCards</title>
-<!--TODO Победить модальные окна-->
-
-<!--    <script type="text/javascript" src="../myModal.js"></script>-->
+    <!--TODO Победить модальные окна-->
+    <!--    <script type="text/javascript" src="../myModal.js"></script>-->
 </head>
 <body>
 <th:block th:insert="~{Parts/base :: navbar}"/>
 
-<div class="container">
+<div class="container my-3">
+
+    <form th:action="@{/wordCards/addCardWordsFromFile}" method="post" enctype="multipart/form-data">
+        <div class="form-row">
+            <label class="col">
+                <input class="form-control" type="file" name="file" id="customFile"/>
+                <label class="custom-file-label mx-1" for="customFile">Choose file</label>
+            </label>
+            <label class="col-1">
+                <select class="form-control" name="languageId">
+                    <option value="">Lang</option>
+                    <option th:each="language :${languages}" th:value="${language.id}"
+                            th:text="${language.name}"></option>
+                </select>
+            </label>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary btn-block">Load</button>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-dark btn-block" data-toggle="modal" data-target="#ModalRemoveAllWordCards">DelAll</button>
+            </div>
+        </div>
+    </form>
+
     <form th:action="@{/wordCards/add}" method="post">
-        <div class="form-row my-2">
+        <div class="form-row">
             <label class="col-2">
                 <input type="text" class="form-control" name="text" placeholder="Новое определение">
             </label>
@@ -21,34 +43,40 @@
             </label>
             <div class="col-1">
                 <select class="form-control" name="languageId">
-                    <option value="">Язык...</option>
+                    <option value="">Lang</option>
                     <option th:each="language :${languages}" th:value="${language.id}"
                             th:text="${language.name}"></option>
                 </select>
             </div>
             <div class="col-1">
-                <button type="submit" class="btn btn-primary btn-block">Новый</button>
+                <button type="submit" class="btn btn-primary btn-block">New</button>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-secondary btn-block" data-toggle="modal" data-target="#ModalRemoveDuplicateWordCards">Duplicate</button>
             </div>
         </div>
     </form>
 
     <form th:action="@{/wordCards}" method="get">
-        <div class="form-row my-2">
+        <div class="form-row">
             <label class="col-2">
-                <input type="text" class="form-control" name="filterText" placeholder="" th:value="${filterText}">
+                <input type="text" class="form-control" name="filterText" id="filterTextId" th:value="${filterText}">
             </label>
             <label class="col">
-                <input type="text" class="form-control" name="filterTranslated" placeholder="" th:value="${filterTranslated}">
+                <input type="text" class="form-control" name="filterTranslated" id="filterTranslatedId" th:value="${filterTranslated}">
             </label>
             <div class="col-1">
                 <select class="form-control" name="filterLanguageId" id="filterLanguage">
-                    <option value="">Все</option>
+                    <option value="">All</option>
                     <option th:each="language :${languages}" th:value="${language.id}"
                             th:text="${language.name}"></option>
                 </select>
             </div>
             <div class="col-1">
-                <button type="submit" class="btn btn-light btn-block">Фильтр</button>
+                <button type="submit" class="btn btn-light btn-block">Filter</button>
+            </div>
+            <div class="col-1">
+                <button type="" class="btn btn-block" onclick="return clearFilter();">Reset</button>
             </div>
         </div>
     </form>
@@ -61,8 +89,8 @@
                     <div class="row">
                         <div class="col-2 mx-0">Определение</div>
                         <div class="col mx-0">Значение</div>
-                        <div class="col-1 mx-1">Язык</div>
-                        <div class="col-1 mx-1"></div>
+                        <div class="col-1 mx-1">Language</div>
+                        <div class="col-2 mx-1"></div>
                     </div>
                 </td>
             </tr>
@@ -74,7 +102,7 @@
                         <div class="col-2 mx-0" th:text="${wordCard.text}"></div>
                         <div class="col mx-0" th:text="${wordCard.translated}"></div>
                         <div class="col-1 mx-1" th:text="${wordCard.language.name}"></div>
-                        <div class="col-1 mx-1" style="text-align: center">
+                        <div class="col-2 mx-1" style="text-align: center">
                             <!--                            <a th:href="@{'/wordCards/editWordCard/' + ${wordCard.id}}"-->
                             <!--                               class="badge badge-light">E</a>-->
                             <a class="badge badge-light" data-toggle="modal" data-target="#myModal"
@@ -134,8 +162,72 @@
 </div>
 
 
-<th:block th:insert="~{Parts/base :: jslinks}" />
+<!-- Modal question "Remove all WordCards" -->
+<div class="modal fade" id="ModalRemoveAllWordCards" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Remove ALL WordCards</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body center">
+                Are you seriously?
+            </div>
+            <div class="modal-footer">
+                <form method="get" th:action="@{/wordCards/removeAllWordCards}">
+                    <button type="submit" class="btn btn-light">yes</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">NO!</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Modal question "Remove duplicate WordCards" -->
+<div class="modal fade" id="ModalRemoveDuplicateWordCards" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Remove duplicate WordCards</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body center">
+                Are you sure you want to...
+            </div>
+            <div class="modal-footer">
+                <form method="get" th:action="@{/wordCards/removeDuplicateWordCards}">
+                    <button type="submit" class="btn btn-light">yes</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">NO!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:insert="~{Parts/base :: jslinks}"/>
+
+<!--Remove duplicate wordCards-->
+<script>
+    function removeAllWordCards() {
+        alert("removeAllWordCards");
+        return true;
+    }
+</script>
+
+<!--Remove duplicate wordCards-->
+<script>
+    function removeDuplicateWordCards() {
+        alert("removeDuplicateWordCards");
+        return true;
+    }
+</script>
+
+<!--Set value to filterLanguageId-->
 <script th:inline="javascript">
     var filteredLanguage = [[${filterLanguageId}]];
     var elems = document.getElementById("filterLanguage").options;
@@ -145,6 +237,17 @@
         }
     }
 </script>
+
+<!--Clear filter fields by button "Reset"-->
+<script>
+    function clearFilter() {
+        document.getElementById("filterTextId").value = "";
+        document.getElementById("filterTranslatedId").value = "";
+        document.getElementById("filterLanguage").value = "";
+        return true;
+    }
+</script>
+
 
 <!--TODO При выборе фильтра ощищать другие поля фильтра-->
 

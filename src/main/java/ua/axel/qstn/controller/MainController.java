@@ -16,9 +16,7 @@ import ua.axel.qstn.repository.WordCardRepo;
 import ua.axel.qstn.service.QuizService;
 import ua.axel.qstn.service.WordCardService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -70,69 +68,7 @@ public class MainController {
         return "index";
     }
 
-    @GetMapping("/wordCards")
-    public String wordCards(
-            @RequestParam(required = false) String filterText,
-            @RequestParam(required = false) String filterTranslated,
-            @RequestParam(required = false) String filterLanguageId,
-            Model model
-    ) {
-        List<WordCard> wordCards;
-        if (filterText != null && !filterText.isEmpty()) {
-            wordCards = wordCardRepo.findByTextContaining(filterText);
-            filterTranslated = null;
-            filterLanguageId = null;
-        } else if (filterTranslated != null && !filterTranslated.isEmpty()) {
-            wordCards = wordCardRepo.findByTranslatedContaining(filterTranslated);
-            filterLanguageId = null;
-        } else if (filterLanguageId != null && !filterLanguageId.isEmpty()) {
-            wordCards = wordCardRepo.findByLanguageId(Long.valueOf(filterLanguageId));
-        } else {
-            wordCards = wordCardRepo.findAll();
-        }
 
-        List<Language> languages = languageRepo.findAll();
-
-        model.addAttribute("wordCards", wordCards);
-        model.addAttribute("languages", languages);
-        model.addAttribute("filterText", filterText);
-        model.addAttribute("filterTranslated", filterTranslated);
-        model.addAttribute("filterLanguageId", filterLanguageId);
-        return "wordCards";
-    }
-
-    @PostMapping("/wordCards/add")
-    public String wordCardsAdd(
-            @RequestParam String text,
-            @RequestParam String translated,
-            @RequestParam String languageId
-    ) {
-        if (!languageId.isEmpty() && !text.isEmpty() && !translated.isEmpty()) {
-            //TODO Optional.get() without 'isPresent()' ???
-            Language language = languageRepo.findById(Long.valueOf(languageId)).get();
-            text = text.trim();
-            translated = translated.trim();
-            WordCard wordCard = new WordCard();
-            wordCard.setLanguage(language);
-            wordCard.setText(text);
-            wordCard.setTranslated(translated);
-            wordCardRepo.save(wordCard);
-        }
-        return "redirect:/wordCards";
-    }
-
-    @GetMapping("/wordCards/removeWordCard/{id}")
-    public String removeWordCard(@PathVariable("id") String id) {
-        wordCardRepo.deleteById(Long.valueOf(id));
-        return "redirect:/wordCards";
-    }
-
-    @GetMapping("/wordCards/editWordCard/{id}")
-    public String editWordCard(@PathVariable("id") String id, Model model) {
-        WordCard wordCard = wordCardRepo.findById(Long.valueOf(id)).get();
-        model.addAttribute("wordCard", wordCard);
-        return "wordCards";
-    }
 
     @GetMapping("/playWords")
     public String playCards(Model model) {

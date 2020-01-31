@@ -9,6 +9,7 @@ public interface WordCardRepo extends CrudRepository<WordCard, Long> {
     @Override
     List<WordCard> findAll();
 
+    List<WordCard> findByText(String text);
     List<WordCard> findByTextContaining(String text);
     List<WordCard> findByTranslatedContaining(String translated);
     List<WordCard> findByLanguageId(Long languageId);
