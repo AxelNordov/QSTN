@@ -5,7 +5,7 @@ import ua.axel.qstn.domain.Quiz;
 
 import java.util.List;
 
-public interface QuizRepo extends CrudRepository<Quiz, Long> {
+public interface QuizDAO extends CrudRepository<Quiz, Long> {
     @Override
     List<Quiz> findAll();
 

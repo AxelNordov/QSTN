@@ -9,11 +9,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class FileService {
+    private final static String UPLOAD_PATH = "/d:/temp/";
+
+
     public static List<WordCard> parseFileToWordCards(File file, Language language) {
-        List<WordCard> wordCards = new ArrayList<>();
+        List<WordCard> wordCards = new LinkedList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -32,12 +36,11 @@ public class FileService {
     }
 
     public static File writeFileOnDisk(MultipartFile file) throws IOException {
-        String uploadPath = "/d:/temp/";
-        File uploadDir = new File(uploadPath);
+        File uploadDir = new File(UPLOAD_PATH);
         if (!uploadDir.exists()) {
             uploadDir.mkdir();
         }
-        File fileOnDisk = new File(uploadPath + "/" + file.getOriginalFilename());
+        File fileOnDisk = new File(UPLOAD_PATH + "/" + file.getOriginalFilename());
         file.transferTo(fileOnDisk);
         return fileOnDisk;
     }

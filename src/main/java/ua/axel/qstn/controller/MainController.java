@@ -4,101 +4,89 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.axel.qstn.domain.Language;
 import ua.axel.qstn.domain.Quiz;
 import ua.axel.qstn.domain.WordCard;
-import ua.axel.qstn.repository.LanguageRepo;
-import ua.axel.qstn.repository.QuizRepo;
-import ua.axel.qstn.repository.WordCardRepo;
+import ua.axel.qstn.repository.QuizDAO;
+import ua.axel.qstn.service.LanguageService;
 import ua.axel.qstn.service.QuizService;
 import ua.axel.qstn.service.WordCardService;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class MainController {
-
+/*
 //    //Field-based dependency injection (Внедрение через поле)
 //    @Autowired
 //    private WordCardRepo wordCardRepo;
-//    @Autowired
-//    private QuizRepo quizRepo;
-//    @Autowired
-//    private LanguageRepo languageRepo;
+
+//    //Setter-based dependency injection (Внедрение через сеттер)
+//    private WordCardRepo wordCardRepo;
 
 //    //Constructor-based dependency injection (Внедрение через конструктор)
 //    private final WordCardRepo wordCardRepo;
-//    private final QuizRepo quizRepo;
-//    private final LanguageRepo languageRepo;
 //
 //    @Autowired
-//    public MainController(WordCardRepo wordCardRepo, QuizRepo quizRepo, LanguageRepo languageRepo) {
+//    public MainController(WordCardRepo wordCardRepo) {
 //        this.wordCardRepo = wordCardRepo;
-//        this.quizRepo = quizRepo;
-//        this.languageRepo = languageRepo;
 //    }
+*/
 
-    //Setter-based dependency injection (Внедрение через сеттер)
-    private WordCardRepo wordCardRepo;
-    private QuizRepo quizRepo;
-    private LanguageRepo languageRepo;
-
-    @Autowired
-    public void setWordCardRepo(WordCardRepo wordCardRepo) {
-        this.wordCardRepo = wordCardRepo;
-    }
+    private final QuizDAO quizDAO;
+    private final QuizService quizService;
+    private final WordCardService wordCardService;
+    private final LanguageService languageService;
 
     @Autowired
-    public void setQuizRepo(QuizRepo quizRepo) {
-        this.quizRepo = quizRepo;
+    public MainController(QuizDAO quizDAO, QuizService quizService, WordCardService wordCardService, LanguageService languageService) {
+        this.quizDAO = quizDAO;
+        this.quizService = quizService;
+        this.wordCardService = wordCardService;
+        this.languageService = languageService;
     }
-
-    @Autowired
-    public void setLanguageRepo(LanguageRepo languageRepo) {
-        this.languageRepo = languageRepo;
-    }
-
 
     @GetMapping("/")
     String index() {
         return "index";
     }
 
-
-
     @GetMapping("/playWords")
     public String playCards(Model model) {
-        List<WordCard> wordCardsAll = wordCardRepo.findAll();
-        WordCard randomWordCard = null;
+        List<WordCard> wordCardsAll = wordCardService.findAll();
+        WordCard wordCard = null;
         if (!wordCardsAll.isEmpty()) {
-            randomWordCard = WordCardService.getRandomWordCard(wordCardsAll);
+            wordCard = wordCardService.getRandomWordCard();
         } else {
-            randomWordCard = new WordCard();
-            randomWordCard.setText("No cards yet!");
-            randomWordCard.setTranslated("Карт не завезли пока!");
+            wordCard = new WordCard();
+            wordCard.setText("No cards yet!");
+            wordCard.setTranslated("Карт не завезли пока!");
         }
-        model.addAttribute("randomWordCard", randomWordCard);
+        model.addAttribute("wordCard", wordCard);
         return "playWords";
     }
 
     @GetMapping("/quizCards")
-    public String quizzes(@RequestParam(required = false) String filterQuestion, @RequestParam(required = false) String filterLanguageId, Model model) {
+    public String quizzes(
+            @RequestParam(required = false) String filterQuestion,
+            @RequestParam(required = false) String filterLanguageId,
+            Model model
+    ) {
         List<Quiz> quizzes;
 
         if (filterQuestion != null && !filterQuestion.isEmpty()) {
-            quizzes = quizRepo.findByQuestionContaining(filterQuestion);
+            quizzes = quizDAO.findByQuestionContaining(filterQuestion);
             filterLanguageId = null;
         } else if (filterLanguageId != null && !filterLanguageId.isEmpty()) {
-            quizzes = quizRepo.findByLanguageId(Long.valueOf(filterLanguageId));
+            quizzes = quizDAO.findByLanguageId(Long.valueOf(filterLanguageId));
         } else {
-            quizzes = quizRepo.findAll();
+            quizzes = quizDAO.findAll();
         }
 
-        List<Language> languages = languageRepo.findAll();
+        List<Language> languages = languageService.findAll();
 
         model.addAttribute("quizzes", quizzes);
         model.addAttribute("languages", languages);
@@ -109,10 +97,10 @@ public class MainController {
 
     @GetMapping("/playQuizzes")
     public String playQuiz(Model model) {
-        List<WordCard> wordCardsAll = wordCardRepo.findAll();
+        List<WordCard> wordCardsAll = wordCardService.findAll();
         Quiz quiz = null;
         if (wordCardsAll.size() >= 4) {
-            quiz = QuizService.quizFromWordCard(wordCardsAll, WordCardService.getRandomWordCard(wordCardsAll));
+            quiz = quizService.quizFromWordCard(wordCardsAll, wordCardService.getRandomWordCard());
         } else {
             quiz = new Quiz();
             quiz.setQuestion("Not enough cards yet for autoquiz!");
@@ -122,37 +110,5 @@ public class MainController {
         return "playQuizzes";
     }
 
-    @GetMapping("/languages")
-    public String languages(Model model) {
-        List<Language> languages = languageRepo.findAll();
-        model.addAttribute("languages", languages.stream().sorted((o1, o2) -> -o2.getName().compareTo(o1.getName())).collect(Collectors.toList()));
-        return "languages";
-    }
-
-    @PostMapping("/languages/add")
-    public String languagesAdd(@RequestParam String name) {
-        if (name != null && !name.isEmpty() && languageRepo.findByName(name).isEmpty()) {
-            Language language = new Language();
-            language.setName(name.trim().toLowerCase());
-            languageRepo.save(language);
-        }
-        return "redirect:/languages";
-    }
-
-    @GetMapping("/languages/removeLanguage/{id}")
-    public String removeLanguage(@PathVariable("id") String id) {
-        Long longId = Long.valueOf(id);
-        if (wordCardRepo.findByLanguageId(longId).isEmpty()) {
-            languageRepo.delete(languageRepo.findById(Long.valueOf(id)).get());
-        }
-        return "redirect:/languages";
-    }
-
-    @GetMapping("/languages/editLanguage/{id}")
-    public String editLanguage(@PathVariable("id") String id, Model model) {
-        Language languages = languageRepo.findById(Long.valueOf(id)).get();
-        model.addAttribute("languages", languages);
-        return "languages";
-    }
 
 }

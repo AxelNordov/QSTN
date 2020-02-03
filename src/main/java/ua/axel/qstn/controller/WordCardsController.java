@@ -7,45 +7,29 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.axel.qstn.domain.Language;
 import ua.axel.qstn.domain.WordCard;
-import ua.axel.qstn.repository.LanguageRepo;
-import ua.axel.qstn.repository.QuizRepo;
-import ua.axel.qstn.repository.WordCardRepo;
 import ua.axel.qstn.service.FileService;
+import ua.axel.qstn.service.LanguageService;
+import ua.axel.qstn.service.WordCardService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/wordCards")
 public class WordCardsController {
-    //Setter-based dependency injection (Внедрение через сеттер)
-    private WordCardRepo wordCardRepo;
-    private QuizRepo quizRepo;
-    private LanguageRepo languageRepo;
+
+    private final WordCardService wordCardService;
+    private final LanguageService languageService;
 
     @Autowired
-    public void setWordCardRepo(WordCardRepo wordCardRepo) {
-        this.wordCardRepo = wordCardRepo;
+    public WordCardsController(WordCardService wordCardService, LanguageService languageService) {
+        this.wordCardService = wordCardService;
+        this.languageService = languageService;
     }
-
-    @Autowired
-    public void setQuizRepo(QuizRepo quizRepo) {
-        this.quizRepo = quizRepo;
-    }
-
-    @Autowired
-    public void setLanguageRepo(LanguageRepo languageRepo) {
-        this.languageRepo = languageRepo;
-    }
-
-
-//    @Value("${upload.path}")
-//    private String uploadPath;
 
     @GetMapping
     public String wordCards(
@@ -56,19 +40,19 @@ public class WordCardsController {
     ) {
         List<WordCard> wordCards;
         if (filterText != null && !filterText.isEmpty()) {
-            wordCards = wordCardRepo.findByTextContaining(filterText);
+            wordCards = wordCardService.findByTextContaining(filterText);
             filterTranslated = null;
             filterLanguageId = null;
         } else if (filterTranslated != null && !filterTranslated.isEmpty()) {
-            wordCards = wordCardRepo.findByTranslatedContaining(filterTranslated);
+            wordCards = wordCardService.findByTranslatedContaining(filterTranslated);
             filterLanguageId = null;
         } else if (filterLanguageId != null && !filterLanguageId.isEmpty()) {
-            wordCards = wordCardRepo.findByLanguageId(Long.valueOf(filterLanguageId));
+            wordCards = wordCardService.findByLanguageId(filterLanguageId);
         } else {
-            wordCards = wordCardRepo.findAll();
+            wordCards = wordCardService.findAll();
         }
 
-        List<Language> languages = languageRepo.findAll();
+        List<Language> languages = languageService.findAll();
 
         model.addAttribute("wordCards", wordCards);
         model.addAttribute("languages", languages);
@@ -85,63 +69,43 @@ public class WordCardsController {
             @RequestParam String languageId
     ) {
         if (!languageId.isEmpty() && !text.isEmpty() && !translated.isEmpty()) {
-            //TODO Optional.get() without 'isPresent()' ???
-            Language language = languageRepo.findById(Long.valueOf(languageId)).get();
+            Language language = languageService.findById(languageId);
             text = text.trim();
             translated = translated.trim();
             WordCard wordCard = new WordCard();
             wordCard.setLanguage(language);
             wordCard.setText(text);
             wordCard.setTranslated(translated);
-            wordCardRepo.save(wordCard);
+            wordCardService.save(wordCard);
         }
         return "redirect:/wordCards";
     }
 
     @GetMapping("/removeWordCard/{id}")
     public String removeWordCard(@PathVariable("id") String id) {
-        wordCardRepo.deleteById(Long.valueOf(id));
+        wordCardService.deleteById(id);
         return "redirect:/wordCards";
     }
 
     @GetMapping("/removeAllWordCards")
     public String removeAllWordCards() {
-        wordCardRepo.deleteAll();
+        wordCardService.deleteAll();
         return "redirect:/wordCards";
     }
 
     @GetMapping("/removeDuplicateWordCards")
     public String removeDuplicateWordCards() {
-        List<WordCard> allWordCards = wordCardRepo.findAll();
-//        for (int i = allWordCards.size() - 1; i > 0; i--) {
-//            for (int j = i - 1; i >= 0; i--) {
-//                if (allWordCards.get(i).equals(allWordCards.get(j))) {
-//                    wordCardRepo.deleteById(allWordCards.get(j).getId());
-//                }
-//            }
-//        }
-
-        Iterator iterator = allWordCards.iterator();
-        while (iterator.hasNext()) {
-            ArrayList<WordCard> wordCardsByText = (ArrayList<WordCard>) wordCardRepo.findByText(((WordCard) iterator.next()).getText());
-            for (int i = wordCardsByText.size() - 1; i >= 0; i--) {
-                WordCard iteratorNext = (WordCard) iterator.next();
-                if (wordCardsByText.get(i) != iteratorNext
-                        && wordCardsByText.get(i).equals(iteratorNext)
-//                        && wordCardsByText.get(i).getTranslated().equals((iteratorNext).getTranslated())
-//                        && wordCardsByText.get(i).getLanguage().equals((iteratorNext).getLanguage())
-                ) {
-                    wordCardRepo.deleteById(wordCardsByText.get(i).getId());
-                }
-            }
-        }
-
+        //TODO Need query
+        List<WordCard> wordCardsAll = wordCardService.findAll();
+        Set<WordCard> wordCardSet = new HashSet<>(wordCardsAll);
+        wordCardService.deleteAll();
+        wordCardService.saveAll(wordCardSet);
         return "redirect:/wordCards";
     }
 
     @GetMapping("/wordCards/editWordCard/{id}")
     public String editWordCard(@PathVariable("id") String id, Model model) {
-        WordCard wordCard = wordCardRepo.findById(Long.valueOf(id)).get();
+        WordCard wordCard = wordCardService.findById(id);
         model.addAttribute("wordCard", wordCard);
         return "wordCards";
     }
@@ -153,11 +117,9 @@ public class WordCardsController {
     ) throws IOException {
         if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty() && !languageId.isEmpty()) {
             File fileOnDisk = FileService.writeFileOnDisk(file);
-
-            Language language = languageRepo.findById(Long.valueOf(languageId)).get();
+            Language language = languageService.findById(languageId);
             List<WordCard> newWordCards = FileService.parseFileToWordCards(fileOnDisk, language);
-
-            wordCardRepo.saveAll(newWordCards);
+            wordCardService.saveAll(newWordCards);
         }
         return "redirect:/wordCards";
     }

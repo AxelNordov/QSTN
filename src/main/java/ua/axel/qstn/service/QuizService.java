@@ -1,15 +1,28 @@
 package ua.axel.qstn.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ua.axel.qstn.domain.Quiz;
 import ua.axel.qstn.domain.WordCard;
+import ua.axel.qstn.repository.QuizDAO;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+@Service
 public class QuizService {
 
-    public static Quiz quizFromWordCard(List<WordCard> wordCards, WordCard wordCard) {
+    private final QuizDAO quizDAO;
+    private final WordCardService wordCardService;
+
+    @Autowired
+    public QuizService(QuizDAO quizDAO, WordCardService wordCardService) {
+        this.quizDAO = quizDAO;
+        this.wordCardService = wordCardService;
+    }
+
+    public Quiz quizFromWordCard(List<WordCard> wordCards, WordCard wordCard) {
         final int COUNT_OF_VARIANTS = 4;
         Quiz quiz = new Quiz();
         quiz.setQuestion(wordCard.getText());
@@ -23,34 +36,25 @@ public class QuizService {
         rightVariants.add(true);
 
         for (int i = 1; i < COUNT_OF_VARIANTS; i++) {
-            variants.add(WordCardService.getRandomWordCardTranslateExcept(wordCards, variants));
+            variants.add(wordCardService.getRandomWordCardTranslateExcept(wordCards, variants));
             rightVariants.add(false);
         }
-
         quiz.setVariants(variants);
         quiz.setRightVariants(rightVariants);
-
-        randomVariants(quiz);
-
+        mixVariants(quiz);
         return quiz;
     }
 
-    private static void randomVariants(Quiz quiz) {
-        ArrayList<String> variants = quiz.getVariants();
-        ArrayList<Boolean> rightVariants = quiz.getRightVariants();
+    private static void mixVariants(Quiz quiz) {
+        List<String> variants = quiz.getVariants();
+        List<Boolean> rightVariants = quiz.getRightVariants();
 
         Random random = new Random();
         for (int i = variants.size() - 1; i > 0; i--) {
             int j = random.nextInt(i);
-            swapElementsFromConcretePlaces(variants, i, j);
-            swapElementsFromConcretePlaces(rightVariants, i, j);
+            MainService.swapElementsFromConcretePlaces(variants, i, j);
+            MainService.swapElementsFromConcretePlaces(rightVariants, i, j);
         }
-    }
-
-    private static <T> void swapElementsFromConcretePlaces(ArrayList<T> arrayList, int i, int j) {
-        T temp = arrayList.get(i);
-        arrayList.set(i, arrayList.get(j));
-        arrayList.set(j, temp);
     }
 
 }

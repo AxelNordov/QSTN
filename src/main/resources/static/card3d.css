@@ -15,7 +15,7 @@
 
 .card3d {
     width: 50%;
-    height: 33%;
+    height: 50%;
     position: relative;
     perspective: 1500px;
 }
