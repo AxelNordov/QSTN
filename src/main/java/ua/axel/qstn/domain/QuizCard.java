@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 @Data
 @Entity
-public class Quiz {
+public class QuizCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,8 +17,8 @@ public class Quiz {
     private Language language;
 
     private String question;
-    private ArrayList<String> variants;
-    private ArrayList<Boolean> rightVariants;
-    private Boolean oneRightVariant;
+    private ArrayList<String> answers;
+    private ArrayList<Boolean> rightAnswers;
+    private Boolean oneRightAnswer;
 
 }

@@ -7,6 +7,7 @@ import ua.axel.qstn.repository.LanguageDAO;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class LanguageService {
@@ -20,34 +21,39 @@ public class LanguageService {
         this.wordCardService = wordCardService;
     }
 
+    public Language findById(Long id) {
+        //TODO Optional.get() without 'isPresent()' ???
+        return languageDAO.findById(id).get();
+    }
+
     public List<Language> findAll() {
-        return languageDAO.findAll().stream().sorted((o1, o2) -> o2.getName().compareTo(o1.getName())).collect(Collectors.toList());
+        return StreamSupport.stream(languageDAO.findAll().spliterator(), false).sorted((o1, o2) -> o2.getName().compareTo(o1.getName())).collect(Collectors.toList());
+    }
+
+    public List<Language> findByName(String name) {
+        return languageDAO.findByName(name);
+    }
+
+    public void save(Language language) {
+        languageDAO.save(language);
     }
 
     public void save(String name) {
         if (name != null && !name.isEmpty() && findByName(name).isEmpty()) {
             Language language = new Language();
-            language.setName(name.trim().toLowerCase());
+            language.setName(name.trim());
             languageDAO.save(language);
         }
     }
 
-    private List<Language> findByName(String name) {
-        return languageDAO.findByName(name);
+    public void deleteById(Long id) {
+        if (wordCardService.findByLanguageId(id).isEmpty()) {
+            languageDAO.deleteById(id);
+        }
     }
 
     public void delete(Language language) {
         languageDAO.delete(language);
     }
 
-    public void deleteById(String stringId) {
-        if (wordCardService.findByLanguageId(stringId).isEmpty()) {
-            languageDAO.deleteById(Long.valueOf(stringId));
-        }
-    }
-
-    public Language findById(String stringId) {
-        //TODO Optional.get() without 'isPresent()' ???
-        return languageDAO.findById(Long.valueOf(stringId)).get();
-    }
 }

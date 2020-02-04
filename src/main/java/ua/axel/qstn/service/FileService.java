@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,12 +20,18 @@ public class FileService {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] lineParts = line.split(";");
-                WordCard wordCard = new WordCard();
-                wordCard.setText(lineParts[0]);
-                wordCard.setTranslated(lineParts[1]);
-                wordCard.setLanguage(language);
-                wordCards.add(wordCard);
+                if (!line.isEmpty()) {
+                    line = line.replaceAll("&nbsp;", "&nbsp");
+                    String[] lineParts = line.split(";");
+                    WordCard wordCard = new WordCard();
+                    wordCard.setQuestion(lineParts[0]);
+                    if (lineParts.length > 1) {
+                        lineParts[1] = lineParts[1].replaceAll("&nbsp", "&nbsp;");
+                        wordCard.setAnswer(lineParts[1]);
+                    }
+                    wordCard.setLanguage(language);
+                    wordCards.add(wordCard);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

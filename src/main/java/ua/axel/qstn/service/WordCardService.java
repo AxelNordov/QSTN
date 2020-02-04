@@ -19,70 +19,76 @@ public class WordCardService {
         this.wordCardDAO = wordCardDAO;
     }
 
-    public WordCard getRandomWordCard() {
-        Random rand = new Random();
-        List<WordCard> wordCardsAll = findAll();
-        return wordCardsAll.get(rand.nextInt(wordCardsAll.size()));
+    public WordCard findById(Long id) {
+        return wordCardDAO.findById(id).get();
     }
 
-    public WordCard getRandomWordCard(String languageId) {
+    public List<WordCard> findAll() {
+        return (List<WordCard>) wordCardDAO.findAll();
+    }
+
+    public List<WordCard> findByLanguageId(Long id) {
+        return wordCardDAO.findByLanguageId(id);
+    }
+
+    public List<WordCard> findByQuestionContaining(String filterQuestion) {
+        return wordCardDAO.findByQuestionContaining(filterQuestion);
+    }
+
+    public List<WordCard> findByAnswerContaining(String filterAnswer) {
+        return wordCardDAO.findByAnswerContaining(filterAnswer);
+    }
+
+    public WordCard getRandomWordCard() {
+        Random random = new Random();
+        List<WordCard> wordCards = findAll();
+        return wordCards.get(random.nextInt(wordCards.size()));
+    }
+
+    public WordCard getRandomWordCard(Long languageId) {
         Random rand = new Random();
         List<WordCard> wordCardsByLanguageId = findByLanguageId(languageId);
         return wordCardsByLanguageId.get(rand.nextInt(wordCardsByLanguageId.size()));
     }
 
-    public List<WordCard> findAll() {
-        return wordCardDAO.findAll();
+    public WordCard getRandomWordCard(List<WordCard> wordCards) {
+        Random random = new Random();
+        WordCard wordCard = null;
+        if (!wordCards.isEmpty()) {
+            wordCard = wordCards.get(random.nextInt(wordCards.size()));
+        } else {
+            wordCard = new WordCard();
+            wordCard.setQuestion("No cards yet!");
+            wordCard.setAnswer("Карт не завезли пока!");
+        }
+        return wordCard;
     }
 
-    public List<WordCard> findByLanguageId(String stringId) {
-        return wordCardDAO.findByLanguageId(Long.valueOf(stringId));
-    }
-
-    public void deleteAll() {
-        wordCardDAO.deleteAll();
-    }
-
-    public void saveAll(Collection<WordCard> wordCardSet) {
-        wordCardDAO.saveAll(wordCardSet);
-    }
-
-    public void deleteById(String stringId) {
-        wordCardDAO.deleteById(Long.valueOf(stringId));
-    }
-
-    public WordCard findById(String stringId) {
-        return wordCardDAO.findById(Long.valueOf(stringId)).get();
-    }
-
-    public List<WordCard> findByTextContaining(String filterText) {
-        return wordCardDAO.findByTextContaining(filterText);
-    }
-
-    public List<WordCard> findByTranslatedContaining(String filterTranslated) {
-        return wordCardDAO.findByTranslatedContaining(filterTranslated);
+    public String getRandomWordCardAnswerExcept(List<WordCard> wordCards, List<String> wordCardAnswerExcept) {
+        String answer;
+        do {
+            answer = getRandomWordCard(wordCards).getAnswer();
+        } while (wordCardAnswerExcept.contains(answer));
+        return answer;
     }
 
     public void save(WordCard wordCard) {
         wordCardDAO.save(wordCard);
     }
 
-    String getRandomWordCardTranslateExcept(List<WordCard> wordCards, List<String> wordCardTranslatedExcept) {
-        String translated;
-        do {
-            translated = getRandomWordCard().getTranslated();
-        } while (wordCardTranslatedExcept.contains(translated));
-        return translated;
+    public void saveAll(Collection<WordCard> wordCardSet) {
+        wordCardDAO.saveAll(wordCardSet);
     }
 
+    public void removeDuplicateWordCards() {
+        wordCardDAO.removeDuplicateWordCards();
+    }
+
+    public void deleteById(Long id) {
+        wordCardDAO.deleteById(id);
+    }
+
+    public void deleteAll() {
+        wordCardDAO.deleteAll();
+    }
 }
-
-
-/*
-    delete t1 FROM word_card t1
-        INNER JOIN word_card t2
-        where t1.id < t2.id
-        AND t1.text = t2.text
-        AND t1.translated = t2.translated
-        AND t1.language_id = t2.language_id;
-*/

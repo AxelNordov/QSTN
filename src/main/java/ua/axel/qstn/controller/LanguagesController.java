@@ -28,22 +28,27 @@ public class LanguagesController {
     }
 
     @PostMapping("/add")
-    public String languagesAdd(@RequestParam String name) {
+    public String add(@RequestParam String name) {
         languageService.save(name);
         return "redirect:/languages";
     }
 
-    @GetMapping("/removeLanguage/{id}")
-    public String removeLanguage(@PathVariable("id") String id) {
+    @PostMapping("/edit")
+    public String edit(Language language) {
+        languageService.save(language);
+        return "redirect:/languages";
+    }
+
+    @GetMapping("/remove/{id}")
+    public String remove(@PathVariable("id") Long id) {
         languageService.deleteById(id);
         return "redirect:/languages";
     }
 
-    @GetMapping("/editLanguage/{id}")
-    public String editLanguage(@PathVariable("id") String id, Model model) {
-        Language languages = languageService.findById(id);
-        model.addAttribute("languages", languages);
-        return "languages";
+    @GetMapping(value = "/find/{id}")
+    @ResponseBody
+    public Language find(@PathVariable("id") Long id) {
+        return languageService.findById(id);
     }
 
 }

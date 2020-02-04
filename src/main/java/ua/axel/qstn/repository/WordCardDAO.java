@@ -1,24 +1,31 @@
 package ua.axel.qstn.repository;
 
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import ua.axel.qstn.domain.WordCard;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 public interface WordCardDAO extends CrudRepository<WordCard, Long> {
-    @Override
-    List<WordCard> findAll();
 
-    List<WordCard> findByText(String text);
-    List<WordCard> findByTextContaining(String text);
-    List<WordCard> findByTranslatedContaining(String translated);
+    List<WordCard> findByQuestionContaining(String question);
+
+    List<WordCard> findByAnswerContaining(String answer);
+
     List<WordCard> findByLanguageId(Long languageId);
 
-//    @Modifying
-//    @Query(
-//            value =
-//                    "insert into Users (name, age, email, status) values (:name, :age, :email, :status)",
-//            nativeQuery = true)
-//    void insertUser(@Param("name") String name, @Param("age") Integer age,
-//                    @Param("status") Integer status, @Param("email") String email);
+    @Modifying
+    @Transactional
+    @Query(
+            value = "DELETE t1 FROM word_card t1 \n" +
+                    "INNER JOIN word_card t2 \n" +
+                    "WHERE t1.id > t2.id \n" +
+                    "AND t1.question = t2.question \n" +
+                    "AND t1.answer = t2.answer \n" +
+                    "AND t1.language_id = t2.language_id;",
+            nativeQuery = true)
+    void removeDuplicateWordCards();
+
 }

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Parts/base :: common_header(~{::title},~{::link})">
+    <title>QSTN PlayQuizzes</title>
+    <link href="/myCSS.css" rel="stylesheet">
+</head>
+<body>
+
+<th:block th:insert="~{Parts/base :: navbar}"/>
+
+<div class="container">
+    <div class="row mb-3"></div>
+    <form method="get" th:action="@{/quizCards/play}">
+        <div class="form-row justify-content-md-center">
+            <div class="col-2">
+                <select class="form-control" id="filterLanguage" name="filterLanguageId">
+                    <option value="">Все</option>
+                    <option th:each="language :${languages}" th:text="${language.name}"
+                            th:value="${language.id}"></option>
+                </select>
+            </div>
+            <div class="col-1">
+                <button class="btn btn-primary btn-block" type="submit">Next</button>
+            </div>
+        </div>
+    </form>
+    <div class="row mb-3"></div>
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-primary" th:utext="${quizCard.question}"></div>
+            <div class="alert alert-secondary" th:utext="${quizCard.answers[0]}"></div>
+            <div class="alert alert-secondary" th:utext="${quizCard.answers[1]}"></div>
+            <div class="alert alert-secondary" th:utext="${quizCard.answers[2]}"></div>
+            <div class="alert alert-secondary" th:utext="${quizCard.answers[3]}"></div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="~{Parts/base :: jslinks}"/>
+
+<!--Set value to filterLanguageId-->
+<script th:inline="javascript">
+    const filteredLanguage = [[${filterLanguageId}]];
+    const elems = document.getElementById("filterLanguage").options;
+    for (let i = 0; i < elems.length; i++) {
+        if (elems[i].value == filteredLanguage) {
+            elems[i].selected = "selected";
+        }
+    }
+</script>
+
+</body>
+</html>

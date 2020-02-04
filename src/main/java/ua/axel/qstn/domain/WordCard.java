@@ -16,8 +16,10 @@ public class WordCard {
     @ManyToOne
     private Language language;
 
-    private String text;
-    private String translated;
+    private String question;
+
+    @Column(length = 1024)
+    private String answer;
 
     @Override
     public boolean equals(Object o) {
@@ -25,13 +27,13 @@ public class WordCard {
         if (o == null || getClass() != o.getClass()) return false;
         WordCard wordCard = (WordCard) o;
         return language.equals(wordCard.language) &&
-                text.equals(wordCard.text) &&
-                translated.equals(wordCard.translated);
+                question.equals(wordCard.question) &&
+                answer.equals(wordCard.answer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(language, text, translated);
+        return Objects.hash(language, question, answer);
     }
 }
 

@@ -6,8 +6,7 @@ import ua.axel.qstn.domain.Language;
 import java.util.List;
 
 public interface LanguageDAO extends CrudRepository<Language, Long> {
-    @Override
-    List<Language> findAll();
 
     List<Language> findByName(String name);
+
 }

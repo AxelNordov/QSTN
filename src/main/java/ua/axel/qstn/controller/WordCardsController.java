@@ -13,10 +13,8 @@ import ua.axel.qstn.service.WordCardService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/wordCards")
@@ -32,96 +30,108 @@ public class WordCardsController {
     }
 
     @GetMapping
-    public String wordCards(
-            @RequestParam(required = false) String filterText,
-            @RequestParam(required = false) String filterTranslated,
-            @RequestParam(required = false) String filterLanguageId,
-            Model model
-    ) {
+    public String wordCards(@RequestParam(required = false) String filterQuestion, @RequestParam(required = false) String filterAnswer, @RequestParam(required = false) Long filterLanguageId, Model model) {
         List<WordCard> wordCards;
-        if (filterText != null && !filterText.isEmpty()) {
-            wordCards = wordCardService.findByTextContaining(filterText);
-            filterTranslated = null;
+        if (filterQuestion != null && !filterQuestion.isEmpty()) {
+            wordCards = wordCardService.findByQuestionContaining(filterQuestion);
+            filterAnswer = null;
             filterLanguageId = null;
-        } else if (filterTranslated != null && !filterTranslated.isEmpty()) {
-            wordCards = wordCardService.findByTranslatedContaining(filterTranslated);
+        } else if (filterAnswer != null && !filterAnswer.isEmpty()) {
+            wordCards = wordCardService.findByAnswerContaining(filterAnswer);
             filterLanguageId = null;
-        } else if (filterLanguageId != null && !filterLanguageId.isEmpty()) {
+        } else if (filterLanguageId != null) {
             wordCards = wordCardService.findByLanguageId(filterLanguageId);
         } else {
             wordCards = wordCardService.findAll();
+        }
+
+        final int NUMBER_OF_ITEMS = 256;
+        if (wordCards.size() > NUMBER_OF_ITEMS) {
+            wordCards = wordCards.subList(wordCards.size() - NUMBER_OF_ITEMS, wordCards.size());
         }
 
         List<Language> languages = languageService.findAll();
 
         model.addAttribute("wordCards", wordCards);
         model.addAttribute("languages", languages);
-        model.addAttribute("filterText", filterText);
-        model.addAttribute("filterTranslated", filterTranslated);
+        model.addAttribute("filterQuestion", filterQuestion);
+        model.addAttribute("filterAnswer", filterAnswer);
         model.addAttribute("filterLanguageId", filterLanguageId);
         return "wordCards";
     }
 
+    @GetMapping("/play")
+    public String play(@RequestParam(required = false) Long filterLanguageId, Model model) {
+        List<Language> languages = languageService.findAll();
+        WordCard wordCard;
+        if (filterLanguageId != null) {
+            wordCard = wordCardService.getRandomWordCard(wordCardService.findByLanguageId(filterLanguageId));
+        } else {
+            wordCard = wordCardService.getRandomWordCard(wordCardService.findAll());
+        }
+
+        model.addAttribute("languages", languages);
+        model.addAttribute("filterLanguageId", filterLanguageId);
+        model.addAttribute("wordCard", wordCard);
+        return "wordCardsPlay";
+    }
+
     @PostMapping("/add")
-    public String wordCardsAdd(
-            @RequestParam String text,
-            @RequestParam String translated,
-            @RequestParam String languageId
-    ) {
-        if (!languageId.isEmpty() && !text.isEmpty() && !translated.isEmpty()) {
+    public String add(@RequestParam String question, @RequestParam String answer, @RequestParam Long languageId) {
+        if (languageId != null && !question.isEmpty() && !answer.isEmpty()) {
             Language language = languageService.findById(languageId);
-            text = text.trim();
-            translated = translated.trim();
+            question = question.trim();
+            answer = answer.trim();
             WordCard wordCard = new WordCard();
             wordCard.setLanguage(language);
-            wordCard.setText(text);
-            wordCard.setTranslated(translated);
+            wordCard.setQuestion(question);
+            wordCard.setAnswer(answer);
             wordCardService.save(wordCard);
         }
         return "redirect:/wordCards";
     }
 
-    @GetMapping("/removeWordCard/{id}")
-    public String removeWordCard(@PathVariable("id") String id) {
-        wordCardService.deleteById(id);
-        return "redirect:/wordCards";
-    }
-
-    @GetMapping("/removeAllWordCards")
-    public String removeAllWordCards() {
-        wordCardService.deleteAll();
-        return "redirect:/wordCards";
-    }
-
-    @GetMapping("/removeDuplicateWordCards")
-    public String removeDuplicateWordCards() {
-        //TODO Need query
-        List<WordCard> wordCardsAll = wordCardService.findAll();
-        Set<WordCard> wordCardSet = new HashSet<>(wordCardsAll);
-        wordCardService.deleteAll();
-        wordCardService.saveAll(wordCardSet);
-        return "redirect:/wordCards";
-    }
-
-    @GetMapping("/wordCards/editWordCard/{id}")
-    public String editWordCard(@PathVariable("id") String id, Model model) {
-        WordCard wordCard = wordCardService.findById(id);
-        model.addAttribute("wordCard", wordCard);
-        return "wordCards";
-    }
-
-    @PostMapping("/addCardWordsFromFile")
-    public String addCardWordsFromFile(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam String languageId
-    ) throws IOException {
-        if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty() && !languageId.isEmpty()) {
+    @PostMapping("/addFromFile")
+    public String addFromFile(@RequestParam("file") MultipartFile file, @RequestParam Long languageId) throws IOException {
+        if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty() && languageId != null) {
             File fileOnDisk = FileService.writeFileOnDisk(file);
             Language language = languageService.findById(languageId);
             List<WordCard> newWordCards = FileService.parseFileToWordCards(fileOnDisk, language);
             wordCardService.saveAll(newWordCards);
         }
         return "redirect:/wordCards";
+    }
+
+    @GetMapping("/remove/{id}")
+    public String remove(@PathVariable("id") Long id) {
+        wordCardService.deleteById(id);
+        return "redirect:/wordCards";
+    }
+
+    @GetMapping("/removeDuplicates")
+    public String removeDuplicates() {
+        wordCardService.removeDuplicateWordCards();
+        return "redirect:/wordCards";
+    }
+
+    @GetMapping("/removeAll")
+    public String removeAll() {
+        wordCardService.deleteAll();
+        return "redirect:/wordCards";
+    }
+
+    @PostMapping("/edit")
+    public String edit(WordCard wordCard, @RequestParam Long languageId) {
+        //TODO Костыль. Непонятно как передать language
+        wordCard.setLanguage(languageService.findById(languageId));
+        wordCardService.save(wordCard);
+        return "redirect:/wordCards";
+    }
+
+    @GetMapping(value = "/find/{id}")
+    @ResponseBody
+    public WordCard find(@PathVariable("id") Long id) {
+        return wordCardService.findById(id);
     }
 
 }

@@ -4,20 +4,19 @@
     <title>QSTN Languages</title>
 </head>
 <body>
-<th:block th:insert="~{Parts/base :: navbar}" />
+<th:block th:insert="~{Parts/base :: navbar}"/>
 
 <div class="container my-3">
-    <form th:action="@{/languages/add}" method="post">
+    <form method="post" th:action="@{/languages/add}">
         <div class="form-row my-2">
-            <label class="col-11">
-                <input type="text" class="form-control" name="name" placeholder="Название языка">
+            <label class="col-10">
+                <input class="form-control" name="name" placeholder="Name of new language" type="text">
             </label>
-            <div class="col-1">
-                <button type="submit" class="btn btn-primary btn-block">Новый</button>
+            <div class="col-2">
+                <button class="btn btn-primary btn-block" type="submit">Add</button>
             </div>
         </div>
     </form>
-
 
     <div>
         <table class="table table-hover table-sm">
@@ -25,8 +24,8 @@
             <tr>
                 <td>
                     <div class="row">
-                        <div class="col-11">Название языка</div>
-                        <div class="col-1">
+                        <div class="col-10">Name</div>
+                        <div class="col-2">
 
                         </div>
                     </div>
@@ -37,12 +36,10 @@
             <tr th:each="language :${languages}">
                 <td>
                     <div class="row">
-                        <div class="col-11" th:text="${language.name}"></div>
-                        <div class="col-1">
-                            <a th:href="@{'/languages/editLanguage/' + ${language.id}}"
-                               class="badge badge-light">E</a>
-                            <a th:href="@{'/languages/removeLanguage/' + ${language.id}}"
-                               class="badge badge-light">X</a>
+                        <div class="col-10" th:text="${language.name}"></div>
+                        <div class="col-2">
+                            <a class="badge badge-success languageEdit" th:href="@{/languages/find/{id}(id=${language.id})}">edit</a>
+                            <a class="badge badge-danger" th:href="@{'/languages/remove/' + ${language.id}}">del</a>
                         </div>
                     </div>
                 </td>
@@ -52,6 +49,53 @@
     </div>
 </div>
 
-<th:block th:insert="~{Parts/base :: jslinks}" />
+<!-- Modal "Edit language" -->
+<div class="formEditLanguage">
+    <form method="post" th:action="@{/languages/edit}">
+        <div class="modal fade" id="formModalEditLanguage" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title mx-3">Edit language</h4>
+                        <button class="close" data-dismiss="modal" type="button">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group mx-3">
+                                <label class="control-label" for="languageNameInput">Name</label>
+                                <input class="form-control" id="languageNameInput" name="name" type="text"/>
+                                <input class="form-control" id="languageIdInput" name="id" type="hidden"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Save</button>
+                        <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<th:block th:insert="~{Parts/base :: jslinks}"/>
+
+<!--Fill fields in modal by button "Edit"-->
+<script>
+    $(document).ready(function () {
+        $('.languageEdit').on('click', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+
+            $.get(href, function (language, status) {
+                $('#languageIdInput').val(language.id);
+                $('#languageNameInput').val(language.name);
+            });
+            $('#formModalEditLanguage').modal();
+        });
+    });
+</script>
+
 </body>
 </html>

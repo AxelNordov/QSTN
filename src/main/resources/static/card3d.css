@@ -14,15 +14,14 @@
 }
 
 .card3d {
-    width: 50%;
-    height: 50%;
+    width: 60%;
+    height: 40%;
     position: relative;
     perspective: 1500px;
 }
 
 .front3d, .back3d {
     padding: 20px;
-    font-size: xx-large;
     text-align: center;
     position: absolute;
     width: 100%;
@@ -39,10 +38,12 @@
 }
 
 .front3d {
+    font-size: xx-large;
     background-color: #EEE;
 }
 
 .back3d {
+    font-size: xx-large;
     background-color: #BDBDBD;
     transform: rotateX(180deg);
 

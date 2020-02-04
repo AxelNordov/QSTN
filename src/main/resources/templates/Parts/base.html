@@ -5,34 +5,33 @@
     <title th:replace="${title}">QSTN (Question)</title>
 
     <!-- Common styles and scripts -->
-    <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+    <link href="/favicon.png" rel="shortcut icon" type="image/png"/>
     <meta charset="utf-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" rel="stylesheet">
 
     <!--/* Per-page placeholder for additional links */-->
     <th:block th:insert="${links}"/>
 
 </head>
 <body>
-<nav th:fragment="navbar" class="navbar navbar-expand navbar-dark bg-dark">
+<nav class="navbar navbar-expand navbar-dark bg-dark" th:fragment="navbar">
     <a class="navbar-brand" href="/">
-        <img src="/QSTN_onlyQ-solid.svg" width="30" height="30" class="d-inline-block align-top mr-3" alt="">QSTN
+        <img alt="" class="d-inline-block align-top mr-3" height="30" src="/QSTN_onlyQ-solid.svg" width="30">QSTN
     </a>
 
     <div>
         <ul class="navbar-nav">
-            <li class="nav-item"><a class="nav-link" href="/playWords">PlayWords</a></li>
-            <li class="nav-item"><a class="nav-link" href="/playQuizzes">PlayQuizzes</a></li>
+            <li class="nav-item"><a class="nav-link" href="/wordCards/play">PlayWords</a></li>
+            <li class="nav-item"><a class="nav-link" href="/quizCards/play">PlayQuizzes</a></li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-                   aria-expanded="false">More</a>
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                   role="button">More</a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="/wordCards">WordCards</a>
-<!--                    <a class="dropdown-item" href="/wordCards/addCardWordsFromFile">AddCardWordsFromFile</a></a>-->
                     <a class="dropdown-item" href="/quizCards">QuizCards</a>
                     <a class="dropdown-item" href="/languages">Languages</a>
                 </div>
@@ -45,9 +44,10 @@
 <th:block th:fragment="jslinks">
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<!--    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>-->
+    <script crossorigin="anonymous" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script crossorigin="anonymous" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script crossorigin="anonymous" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </th:block>
 </body>
 </html>
