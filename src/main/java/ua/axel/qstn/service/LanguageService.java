@@ -14,11 +14,13 @@ public class LanguageService {
 
     private LanguageDAO languageDAO;
     private WordCardService wordCardService;
+    private QuizCardService quizCardService;
 
     @Autowired
-    public LanguageService(LanguageDAO languageDAO, WordCardService wordCardService) {
+    public LanguageService(LanguageDAO languageDAO, WordCardService wordCardService, QuizCardService quizCardService) {
         this.languageDAO = languageDAO;
         this.wordCardService = wordCardService;
+        this.quizCardService = quizCardService;
     }
 
     public Language findById(Long id) {
@@ -47,7 +49,7 @@ public class LanguageService {
     }
 
     public void deleteById(Long id) {
-        if (wordCardService.findByLanguageId(id).isEmpty()) {
+        if (wordCardService.findByLanguageId(id).isEmpty() && quizCardService.findByLanguageId(id).isEmpty()) {
             languageDAO.deleteById(id);
         }
     }

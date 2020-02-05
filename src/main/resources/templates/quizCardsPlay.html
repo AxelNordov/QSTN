@@ -26,12 +26,18 @@
     </form>
     <div class="row mb-3"></div>
     <div class="row">
+        <!--        <div class="col">-->
+        <!--            <div class="alert alert-primary" th:utext="${quizCard.question}"></div>-->
+        <!--            <div class="alert alert-secondary" th:utext="${quizCard.options[0].value}"></div>-->
+        <!--            <div class="alert alert-secondary" th:utext="${quizCard.options[1].value}"></div>-->
+        <!--            <div class="alert alert-secondary" th:utext="${quizCard.options[2].value}"></div>-->
+        <!--            <div class="alert alert-secondary" th:utext="${quizCard.options[3].value}"></div>-->
+        <!--        </div>-->
         <div class="col">
             <div class="alert alert-primary" th:utext="${quizCard.question}"></div>
-            <div class="alert alert-secondary" th:utext="${quizCard.answers[0]}"></div>
-            <div class="alert alert-secondary" th:utext="${quizCard.answers[1]}"></div>
-            <div class="alert alert-secondary" th:utext="${quizCard.answers[2]}"></div>
-            <div class="alert alert-secondary" th:utext="${quizCard.answers[3]}"></div>
+            <div th:each="option :${quizCard.options}">
+                <div class="alert alert-secondary option" th:utext="${option.value}" th:id="${#ids.seq('option')}"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -48,6 +54,25 @@
         }
     }
 </script>
+
+<!--Change color of option-->
+<script>
+    $(document).ready(function () {
+        var rightBooleanOptions = [[${rightBooleanOptions}]];
+
+        $('.option').on('click', function (event) {
+            i = $(this).attr('id').replace('option', '');
+            // alert(rightBooleanOptions);
+            if (rightBooleanOptions[i-1]) {
+                $(this).attr('class', 'alert alert-success option');
+            } else {
+                $(this).attr('class', 'alert alert-danger option');
+            }
+        });
+    });
+</script>
+
+
 
 </body>
 </html>

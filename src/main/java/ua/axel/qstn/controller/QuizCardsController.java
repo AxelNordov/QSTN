@@ -3,18 +3,15 @@ package ua.axel.qstn.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ua.axel.qstn.domain.Language;
+import ua.axel.qstn.domain.Option;
 import ua.axel.qstn.domain.QuizCard;
 import ua.axel.qstn.domain.WordCard;
 import ua.axel.qstn.service.LanguageService;
 import ua.axel.qstn.service.QuizCardService;
 import ua.axel.qstn.service.WordCardService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -75,7 +72,7 @@ public class QuizCardsController {
             } else {
                 quizCard = new QuizCard();
                 quizCard.setQuestion("Not enough cards yet for autoquizcard!");
-                quizCard.setAnswers(new ArrayList<>(Arrays.asList("Количества", "карточек", "пока", "не достаточно")));
+                quizCard.setOptions(quizCardService.stringsToOptions(Arrays.asList("Количества", "карточек", "пока", "недостаточно")));
             }
         } else {
             wordCards = wordCardService.findAll();
@@ -84,22 +81,44 @@ public class QuizCardsController {
             } else {
                 quizCard = new QuizCard();
                 quizCard.setQuestion("Not enough cards yet for autoquizcard!");
-                quizCard.setAnswers(new ArrayList<>(Arrays.asList("Количества", "карточек", "пока", "не достаточно")));
+                quizCard.setOptions(quizCardService.stringsToOptions(Arrays.asList("Количества", "карточек", "пока", "недостаточно")));
             }
         }
 
+        List<Boolean> rightBooleanOptions = QuizCardService.getRightBooleanOptions(quizCard);
+
         model.addAttribute("languages", languages);
         model.addAttribute("filterLanguageId", filterLanguageId);
+        model.addAttribute("rightBooleanOptions", rightBooleanOptions);
         model.addAttribute("quizCard", quizCard);
         return "quizCardsPlay";
     }
 
     @PostMapping("/edit")
-    public String edit(QuizCard quizCard, @RequestParam Long languageId) {
+    public String edit(QuizCard quizCard, @RequestParam Long languageId, @RequestParam List<String> stringOptions) {
         //TODO Костыль. Непонятно как передать language
-        quizCard.setLanguage(languageService.findById(languageId));
-        quizCardService.save(quizCard);
+        if (languageId != null) {
+            quizCard.setLanguage(languageService.findById(languageId));
+            List<Option> options = quizCardService.stringsToOptions(stringOptions);
+            quizCard.setOptions(options);
+            quizCard.setOneRightOptionRadio(true);
+            quizCard.setRightOptions(1);
+            quizCardService.save(quizCard);
+        }
         return "redirect:/quizCards";
     }
+
+    @GetMapping(value = "/find/{id}")
+    @ResponseBody
+    public QuizCard find(@PathVariable("id") Long id) {
+        return quizCardService.findById(id);
+    }
+
+    @GetMapping("/remove/{id}")
+    public String remove(@PathVariable("id") Long id) {
+        quizCardService.deleteById(id);
+        return "redirect:/quizCards";
+    }
+
 
 }

@@ -3,7 +3,7 @@ package ua.axel.qstn.domain;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -17,8 +17,12 @@ public class QuizCard {
     private Language language;
 
     private String question;
-    private ArrayList<String> answers;
-    private ArrayList<Boolean> rightAnswers;
-    private Boolean oneRightAnswer;
+
+    @OneToMany
+    private List<Option> options;
+
+    private int rightOptions;
+    private int numberOfOptions;
+    private Boolean oneRightOptionRadio;
 
 }

@@ -13,7 +13,7 @@
         <div class="col-11"></div>
         <div class="col-1">
             <!-- Button trigger modal -->
-<!--            <button class="btn btn-primary btn-block" data-target="#quizAddModal" data-toggle="modal" type="button">-->
+            <!--            <button class="btn btn-primary btn-block" data-target="#quizAddModal" data-toggle="modal" type="button">-->
             <button class="btn btn-primary btn-block quizCardEdit" type="button">
                 New
             </button>
@@ -55,9 +55,9 @@
             <tr th:each="i :${#numbers.sequence(quizCards.size() - 1, 0, -1)}" th:with="quizCard=${quizCards[i]}">
                 <td>
                     <div class="row">
-                        <div class="col-9 mx-0" th:text="${quizCard.question}"></div>
-                        <div class="col-2 mx-1" th:text="${quizCard.language.name}"></div>
-                        <div class="col-1 mx-1" style="text-align: center">
+                        <div class="col-9" th:text="${quizCard.question}"></div>
+                        <div class="col-2" th:text="${quizCard.language.name}"></div>
+                        <div class="col-1" style="text-align: center">
                             <a class="badge badge-success quizCardEdit" th:href="@{/quizCards/find/{id}(id=${quizCard.id})}">edit</a>
                             <a class="badge badge-danger" th:href="@{'/quizCards/remove/' + ${quizCard.id}}">del</a>
                         </div>
@@ -74,7 +74,7 @@
 <div class="formEditQuizCard">
     <form method="post" th:action="@{/quizCards/edit}">
         <div class="modal fade" id="formModalEditQuizCard" role="dialog">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Edit quizCard</h4>
@@ -83,19 +83,26 @@
                     <div class="modal-body">
                         <form class="form-horizontal" role="form">
                             <div class="form-group mx-3">
-                                <label class="control-label" for="quizCardQuestionInput">Question</label>
-                                <textarea class="form-control" id="quizCardQuestionInput" name="question" type="text" rows="3"></textarea>
-                                <label class="control-label mt-2">Answers</label>
-                                <textarea class="form-control" id="quizCardAnswerInput1" name="answers" type="text" rows="3"></textarea>
-                                <textarea class="form-control" id="quizCardAnswerInput2" name="answers" type="text" rows="3"></textarea>
-                                <textarea class="form-control" id="quizCardAnswerInput3" name="answers" type="text" rows="3"></textarea>
-                                <textarea class="form-control" id="quizCardAnswerInput4" name="answers" type="text" rows="3"></textarea>
-                                <textarea class="form-control" id="quizCardAnswerInput5" name="answers" type="text" rows="3"></textarea>
-                                <textarea class="form-control" id="quizCardAnswerInput6" name="answers" type="text" rows="3"></textarea>
-                                <textarea class="form-control" id="quizCardAnswerInput7" name="answers" type="text" rows="3"></textarea>
-                                <textarea class="form-control" id="quizCardAnswerInput8" name="answers" type="text" rows="3"></textarea>
-                                <input class="form-control" id="quizCardLanguageIdInput" name="languageId" type="text"/>
-                                <input class="form-control" id="quizCardIdInput" name="id" type="text"/>
+                                <label class="control-label" for="quizCardLanguageSelect">Language</label>
+                                <select class="form-control" id="quizCardLanguageSelect" name="languageId">
+                                    <option value="">---</option>
+                                    <option th:each="language :${languages}" th:text="${language.name}"
+                                            th:value="${language.id}"></option>
+                                </select>
+                                <label class="control-label mt-2" for="quizCardQuestionInput">Question</label>
+                                <textarea class="form-control" id="quizCardQuestionInput" name="question" type="text"></textarea>
+                                <label class="control-label mt-2">Options</label>
+                                <div >
+                                    <textarea class="form-control" id="quizCardOptionInput1" name="stringOptions" type="text"></textarea>
+                                    <textarea class="form-control" id="quizCardOptionInput2" name="stringOptions" type="text"></textarea>
+                                    <textarea class="form-control" id="quizCardOptionInput3" name="stringOptions" type="text"></textarea>
+                                    <textarea class="form-control" id="quizCardOptionInput4" name="stringOptions" type="text"></textarea>
+                                    <textarea class="form-control" id="quizCardOptionInput5" name="stringOptions" type="text"></textarea>
+                                    <textarea class="form-control" id="quizCardOptionInput6" name="stringOptions" type="text"></textarea>
+                                    <textarea class="form-control" id="quizCardOptionInput7" name="stringOptions" type="text"></textarea>
+                                    <textarea class="form-control" id="quizCardOptionInput8" name="stringOptions" type="text"></textarea>
+                                </div>
+                                <input class="form-control" id="quizCardIdInput" name="id" type="hidden"/>
                             </div>
                         </form>
                     </div>
@@ -110,120 +117,61 @@
 </div>
 
 
-<!-- Modal -->
-<!--<div id="quizAddModal" class="modal fade" role="dialog">-->
-<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="quizAddModal" role="dialog"
-     tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">New quizCard</h5>
-                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <label class="col">Question</label>
-                        <label class="col"><input class="form-control" id="questionInput" type="text"/></label>
-                    </div>
-                    <div class="btn-group-vertical" data-toggle="buttons" id="myRadio">
-                        <label class="col">Variants</label>
-
-                        <!--                        <div class="btn-group-vertical" data-toggle="buttons">-->
-                        <!--                            <div>-->
-                        <!--                                <label class="btn btn-light">-->
-                        <!--                                    <input type="radio" name="options" id="option1" autocomplete="off">-->
-                        <!--                                </label>-->
-                        <!--                                <div class="form-control">-->
-                        <!--                                    <input type="text" aria-label="Checkbox for following text input">-->
-                        <!--                                </div>-->
-                        <!--                            </div>-->
-                        <!--                            <label class="btn btn-light">-->
-                        <!--                                <input type="radio" name="options" id="option2" autocomplete="off">-->
-                        <!--                            </label>-->
-                        <!--                            <label class="btn btn-light">-->
-                        <!--                                <input type="radio" name="options" id="option3" autocomplete="off">-->
-                        <!--                            </label>-->
-                        <!--                        </div>-->
-
-                        <div class="input-group col mb-2">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input aria-label="Checkbox for following text input" type="radio">
-                                </div>
-                            </div>
-                            <input aria-label="Text input with radio" class="form-control" type="text">
-                        </div>
-                        <div class="input-group col mb-2">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input aria-label="Checkbox for following text input" type="radio">
-                                </div>
-                            </div>
-                            <input aria-label="Text input with radio" class="form-control" type="text">
-                        </div>
-                        <div class="input-group col mb-2">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input aria-label="Checkbox for following text input" type="radio">
-                                </div>
-                            </div>
-                            <input aria-label="Text input with radio" class="form-control" type="text">
-                        </div>
-                        <div class="input-group col mb-2">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input aria-label="Checkbox for following text input" type="radio">
-                                </div>
-                            </div>
-                            <input aria-label="Text input with radio" class="form-control" type="text">
-                        </div>
-                        <div class="input-group col mb-2">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input aria-label="Checkbox for following text input" type="radio">
-                                </div>
-                            </div>
-                            <input aria-label="Text input with radio" class="form-control" type="text">
-                        </div>
-                        <div class="input-group col mb-2">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input aria-label="Checkbox for following text input" type="radio">
-                                </div>
-                            </div>
-                            <input aria-label="Text input with radio" class="form-control" type="text">
-                        </div>
-                        <div class="input-group col mb-2">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input aria-label="Checkbox for following text input" type="radio">
-                                </div>
-                            </div>
-                            <input aria-label="Text input with radio" class="form-control" type="text">
-                        </div>
-                        <div class="input-group col mb-2">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input aria-label="Checkbox for following text input" type="radio">
-                                </div>
-                            </div>
-                            <input aria-label="Text input with radio" class="form-control" type="text">
-                        </div>
-
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-3 col-sm-10">
-                            <button class="btn btn-primary" type="submit">Save</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+<!--&lt;!&ndash; Modal &ndash;&gt;-->
+<!--&lt;!&ndash;<div id="quizAddModal" class="modal fade" role="dialog">&ndash;&gt;-->
+<!--<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="quizAddModal" role="dialog"-->
+<!--     tabindex="-1">-->
+<!--    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h5 class="modal-title" id="exampleModalLabel">New quizCard</h5>-->
+<!--                <button aria-label="Close" class="close" data-dismiss="modal" type="button">-->
+<!--                    <span aria-hidden="true">&times;</span>-->
+<!--                </button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <form class="form-horizontal" role="form">-->
+<!--                    <div class="form-group">-->
+<!--                        <label class="col">Question</label>-->
+<!--                        <label class="col"><input class="form-control" id="questionInput" type="text"/></label>-->
+<!--                    </div>-->
+<!--                    <div class="btn-group-vertical" data-toggle="buttons" id="myRadio">-->
+<!--                        <label class="col">Variants</label>-->
+<!--                        &lt;!&ndash;                        <div class="btn-group-vertical" data-toggle="buttons">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            <div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                <label class="btn btn-light">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                    <input type="radio" name="options" id="option1" autocomplete="off">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                </label>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                <div class="form-control">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                    <input type="text" aria-label="Checkbox for following text input">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            <label class="btn btn-light">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                <input type="radio" name="options" id="option2" autocomplete="off">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            </label>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            <label class="btn btn-light">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                                <input type="radio" name="options" id="option3" autocomplete="off">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            </label>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        <div class="input-group col mb-2">-->
+<!--                            <div class="input-group-prepend">-->
+<!--                                <div class="input-group-text">-->
+<!--                                    <input aria-label="Checkbox for following text input" type="radio">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <input aria-label="Text input with radio" class="form-control" type="text">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="form-group">-->
+<!--                        <div class="col-sm-offset-3 col-sm-10">-->
+<!--                            <button class="btn btn-primary" type="submit">Save</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 
 
 <th:block th:insert="~{Parts/base :: jslinks}"/>
@@ -247,7 +195,15 @@
 
             $.get(href, function (quizCard, status) {
                 $('#quizCardIdInput').val(quizCard.id);
-                // $('#quizCard...').val(quizCard.name);
+                $('#quizCardQuestionInput').val(quizCard.question);
+                $('#quizCardLanguageSelect').val(quizCard.language.id);
+                //TODO немного JS внутри JQuery
+                var stringOptionsArr = document.getElementsByName('stringOptions');
+                for (let i = 0; i < stringOptionsArr.length; i++) {
+                    // alert(stringOptionsArr[i]);
+                    stringOptionsArr[i].value = quizCard.options[i].value;
+                }
+                $('#quizCardLanguageIdInput').val(quizCard.language.id);
             });
             $('#formModalEditQuizCard').modal();
         });

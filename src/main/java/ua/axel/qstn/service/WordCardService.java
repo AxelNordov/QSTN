@@ -27,8 +27,8 @@ public class WordCardService {
         return (List<WordCard>) wordCardDAO.findAll();
     }
 
-    public List<WordCard> findByLanguageId(Long id) {
-        return wordCardDAO.findByLanguageId(id);
+    public List<WordCard> findByLanguageId(Long languageId) {
+        return wordCardDAO.findByLanguageId(languageId);
     }
 
     public List<WordCard> findByQuestionContaining(String filterQuestion) {

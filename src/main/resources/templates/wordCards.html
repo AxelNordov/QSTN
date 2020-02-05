@@ -123,11 +123,16 @@
                     <div class="modal-body">
                         <form class="form-horizontal" role="form">
                             <div class="form-group mx-3">
+                                <label class="control-label" for="wordCardLanguageSelect">Language</label>
+                                <select class="form-control" id="wordCardLanguageSelect" name="languageId">
+                                    <option value="">---</option>
+                                    <option th:each="language :${languages}" th:text="${language.name}"
+                                            th:value="${language.id}"></option>
+                                </select>
                                 <label class="control-label" for="wordCardQuestionInput">Question</label>
                                 <textarea class="form-control" id="wordCardQuestionInput" name="question" type="text"></textarea>
                                 <label class="control-label mt-2" for="wordCardAnswerInput">Answer</label>
                                 <textarea class="form-control" id="wordCardAnswerInput" name="answer" type="text" rows="7"></textarea>
-                                <input class="form-control" id="wordCardLanguageIdInput" name="languageId" type="hidden"/>
                                 <input class="form-control" id="wordCardIdInput" name="id" type="hidden"/>
                             </div>
                         </form>
@@ -223,7 +228,7 @@
                 $('#wordCardIdInput').val(wordCard.id);
                 $('#wordCardQuestionInput').val(wordCard.question);
                 $('#wordCardAnswerInput').val(wordCard.answer);
-                $('#wordCardLanguageIdInput').val(wordCard.language.id);
+                $('#wordCardLanguageSelect').val(wordCard.language.id);
             });
             $('#formModalEditWordCard').modal();
         });
