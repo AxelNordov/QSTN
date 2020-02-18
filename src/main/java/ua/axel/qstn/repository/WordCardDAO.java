@@ -16,16 +16,32 @@ public interface WordCardDAO extends CrudRepository<WordCard, Long> {
 
     List<WordCard> findByLanguageId(Long languageId);
 
+    //For PostgreSQL
     @Modifying
     @Transactional
     @Query(
-            value = "DELETE t1 FROM word_card t1 \n" +
-                    "INNER JOIN word_card t2 \n" +
+            value = "DELETE \n" +
+                    "FROM word_card t1 \n" +
+                    "USING word_card t2 \n" +
                     "WHERE t1.id > t2.id \n" +
                     "AND t1.question = t2.question \n" +
                     "AND t1.answer = t2.answer \n" +
-                    "AND t1.language_id = t2.language_id;",
+                    "AND t1.language_id = t2.language_id ",
             nativeQuery = true)
     void removeDuplicateWordCards();
+
+//    //For MySQL
+//    @Modifying
+//    @Transactional
+//    @Query(
+//            value = "DELETE t1 \n" +
+//                    "FROM word_card t1 \n" +
+//                    "INNER JOIN word_card t2 \n" +
+//                    "WHERE t1.id > t2.id \n" +
+//                    "AND t1.question = t2.question \n" +
+//                    "AND t1.answer = t2.answer \n" +
+//                    "AND t1.language_id = t2.language_id;",
+//            nativeQuery = true)
+//    void removeDuplicateWordCards();
 
 }

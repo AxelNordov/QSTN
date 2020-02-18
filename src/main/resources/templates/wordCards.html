@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <!--<head th:replace="Parts/base :: common_header(~{::title},~{})">-->
-<head th:replace="Parts/base :: common_header(~{::title},~{})">
+<head th:replace="parts/base :: common_header(~{::title},~{})">
     <title>QSTN WordCards</title>
 </head>
 <body>
-<th:block th:insert="~{Parts/base :: navbar}"/>
+<th:block th:insert="~{parts/base :: navbar}"/>
 
 <div class="container my-3">
 
@@ -84,7 +84,7 @@
                     <div class="row">
                         <div class="col-4 col-md-2">Question</div>
                         <div class="col-4 col-md">Answer</div>
-                        <div class="col-4 col-md-2">Language</div>
+                        <div class="col-4 col-md-2 d-none d-md-block">Language</div>
                         <div class="col-0 col-md-2"></div>
                     </div>
                 </td>
@@ -94,10 +94,11 @@
             <tr th:each="i :${#numbers.sequence(wordCards.size() - 1, 0, -1)}" th:with="wordCard=${wordCards[i]}">
                 <td>
                     <div class="row">
-                        <div class="col-12 col-md-2" th:utext="${wordCard.question}"></div>
-                        <div class="col-12 col-md" th:utext="${wordCard.answer}"></div>
-                        <div class="col col-md-2" th:text="${wordCard.language.name}"></div>
-                        <div class="col col-md-2" style="text-align: right">
+                        <div class="col-4 col-md-2" th:utext="${wordCard.question}"></div>
+                        <div class="col-6 col-md" th:utext="${wordCard.answer}"></div>
+                        <div class="col-2 col-md-2" th:text="${wordCard.language.name}"></div>
+                        <div class="col-8 d-block d-md-none">&nbsp;</div>
+                        <div class="col-4 col-md-2" style="text-align: right">
                             <a class="badge badge-success wordCardEdit" th:href="@{/wordCards/find/{id}(id=${wordCard.id})}">edit</a>
                             <a class="badge badge-danger" th:href="@{'/wordCards/remove/' + ${wordCard.id}}">del</a>
                         </div>
@@ -126,8 +127,7 @@
                                 <label class="control-label" for="wordCardLanguageSelect">Language</label>
                                 <select class="form-control" id="wordCardLanguageSelect" name="languageId">
                                     <option value="">---</option>
-                                    <option th:each="language :${languages}" th:text="${language.name}"
-                                            th:value="${language.id}"></option>
+                                    <option th:each="language :${languages}" th:text="${language.name}" th:value="${language.id}"></option>
                                 </select>
                                 <label class="control-label" for="wordCardQuestionInput">Question</label>
                                 <textarea class="form-control" id="wordCardQuestionInput" name="question"></textarea>
@@ -194,7 +194,7 @@
 </div>
 
 
-<th:block th:insert="~{Parts/base :: jslinks}"/>
+<th:block th:insert="~{parts/base :: jslinks}"/>
 
 <!--Set value to filterLanguageId-->
 <script th:inline="javascript">

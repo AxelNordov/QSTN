@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <!--<head th:replace="Parts/base :: common_header(~{::title},~{})">-->
-<head th:replace="Parts/base :: common_header(~{::title},~{})">
+<head th:replace="parts/base :: common_header(~{::title},~{})">
     <title>QSTN Quizes</title>
 </head>
 <body>
-<th:block th:insert="~{Parts/base :: navbar}"/>
+<th:block th:insert="~{parts/base :: navbar}"/>
 
 <div class="container mt-3">
 
@@ -171,7 +171,7 @@
 <!--</div>-->
 
 
-<th:block th:insert="~{Parts/base :: jslinks}"/>
+<th:block th:insert="~{parts/base :: jslinks}"/>
 
 <script th:inline="javascript">
     var filteredLanguage = [[${filterLanguageId}]];

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="Parts/base :: common_header(~{::title},~{::link})">
+<head th:replace="parts/base :: common_header(~{::title},~{::link})">
     <title>QSTN PlayQuizzes</title>
     <link href="/myCSS.css" rel="stylesheet">
 </head>
 <body>
 
-<th:block th:insert="~{Parts/base :: navbar}"/>
+<th:block th:insert="~{parts/base :: navbar}"/>
 
 <div class="container">
     <div class="row mb-3"></div>
@@ -15,26 +15,18 @@
             <div class="col-8 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                 <select class="form-control" id="filterLanguage" name="filterLanguageId">
                     <option value="">Все</option>
-                    <option th:each="language :${languages}" th:text="${language.name}"
-                            th:value="${language.id}"></option>
+                    <option th:each="language :${languages}" th:text="${language.name}" th:value="${language.id}"></option>
                 </select>
             </div>
-            <div class="col-4 col-sm-4 col-md-4 col-lg-3 col-xl-2">
+            <div class="col-4 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                 <button class="btn btn-primary btn-block" type="submit">Next</button>
             </div>
         </div>
     </form>
     <div class="row mb-3"></div>
     <div class="row">
-        <!--        <div class="col">-->
-        <!--            <div class="alert alert-primary" th:utext="${quizCard.question}"></div>-->
-        <!--            <div class="alert alert-secondary" th:utext="${quizCard.options[0].value}"></div>-->
-        <!--            <div class="alert alert-secondary" th:utext="${quizCard.options[1].value}"></div>-->
-        <!--            <div class="alert alert-secondary" th:utext="${quizCard.options[2].value}"></div>-->
-        <!--            <div class="alert alert-secondary" th:utext="${quizCard.options[3].value}"></div>-->
-        <!--        </div>-->
         <div class="col">
-            <div class="alert alert-primary" th:utext="${quizCard.question}"></div>
+            <div class="alert alert-primary mt-2 mb-4" th:utext="${quizCard.question}"></div>
             <div th:each="option :${quizCard.options}">
                 <div class="alert alert-secondary option" th:utext="${option.value}" th:id="${#ids.seq('option')}"></div>
             </div>
@@ -42,7 +34,7 @@
     </div>
 </div>
 
-<th:block th:insert="~{Parts/base :: jslinks}"/>
+<th:block th:insert="~{parts/base :: jslinks}"/>
 
 <!--Set value to filterLanguageId-->
 <script th:inline="javascript">
@@ -62,7 +54,7 @@
 
         $('.option').on('click', function () {
             i = $(this).attr('id').replace('option', '');
-            if (rightBooleanOptions[i-1]) {
+            if (rightBooleanOptions[i - 1]) {
                 $(this).attr('class', 'alert alert-success option');
             } else {
                 $(this).attr('class', 'alert alert-danger option');
@@ -70,7 +62,6 @@
         });
     });
 </script>
-
 
 
 </body>

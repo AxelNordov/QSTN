@@ -14,8 +14,9 @@ import java.util.List;
 
 public class FileService {
 
-    @Value("${upload.path}")
-    private String uploadPath;
+//    @Value("${upload.path}")
+//    private String uploadPath;
+    private String uploadPath = System.getProperty("java.io.tmpdir");
 
     public List<WordCard> parseFileToWordCards(File file, Language language) {
         List<WordCard> wordCards = new LinkedList<>();
@@ -39,7 +40,7 @@ public class FileService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        file.delete();
+//        file.delete();
         return wordCards;
     }
 

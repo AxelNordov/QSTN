@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="Parts/base :: common_header(~{::title},~{})">
+<head th:replace="parts/base :: common_header(~{::title},~{})">
     <title>QSTN Main</title>
 </head>
 
 <body>
-<th:block th:insert="~{Parts/base :: navbar}"/>
+<th:block th:insert="~{parts/base :: navbar}"/>
 <div class="container">
     <div class="row">
         <div class="col" style="width: 800px; position: absolute; top: 50%; left: 50%; margin-right: -50%; transform: translate(-50%, -50%)">
-            <img src="QSTN_logo_v2.svg">
+            <img src="../images/QSTN_logo_v2.svg">
         </div>
     </div>
 </div>
-<th:block th:insert="~{Parts/base :: jslinks}"/>
+<th:block th:insert="~{parts/base :: jslinks}"/>
 </body>
 
 </html>

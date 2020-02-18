@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="Parts/base :: common_header(~{::title},~{})">
+<head th:replace="parts/base :: common_header(~{::title},~{})">
     <title>QSTN Languages</title>
 </head>
 <body>
-<th:block th:insert="~{Parts/base :: navbar}"/>
+<th:block th:insert="~{parts/base :: navbar}"/>
 
 <div class="container my-3">
     <form method="post" th:action="@{/languages/add}">
@@ -78,7 +78,7 @@
 </div>
 
 
-<th:block th:insert="~{Parts/base :: jslinks}"/>
+<th:block th:insert="~{parts/base :: jslinks}"/>
 
 <!--Fill fields in modal by button "Edit"-->
 <script>

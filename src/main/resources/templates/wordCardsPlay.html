@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="Parts/base :: common_header(~{::title},~{::link})">
+<head th:replace="parts/base :: common_header(~{::title},~{::link})">
     <title>QSTN PlayWordCards</title>
     <link href="/card3d.css" rel="stylesheet">
     <link href="/myCSS.css" rel="stylesheet">
@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<th:block th:insert="~{Parts/base :: navbar}"/>
+<th:block th:insert="~{parts/base :: navbar}"/>
 
 <div class="container">
     <div class="row mb-3"></div>
@@ -23,8 +23,7 @@
             <div class="col-8 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                 <select class="form-control" id="filterLanguage" name="filterLanguageId">
                     <option value="">Все</option>
-                    <option th:each="language :${languages}" th:text="${language.name}"
-                            th:value="${language.id}"></option>
+                    <option th:each="language :${languages}" th:text="${language.name}" th:value="${language.id}"></option>
                 </select>
             </div>
             <div class="col-4 col-sm-4 col-md-4 col-lg-3 col-xl-2">
@@ -34,7 +33,7 @@
     </form>
 </div>
 
-<th:block th:insert="~{Parts/base :: jslinks}"/>
+<th:block th:insert="~{parts/base :: jslinks}"/>
 
 <!--Set value to filterLanguageId-->
 <script th:inline="javascript">
