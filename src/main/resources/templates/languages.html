@@ -9,10 +9,10 @@
 <div class="container my-3">
     <form method="post" th:action="@{/languages/add}">
         <div class="form-row my-2">
-            <label class="col-10">
+            <label class="col">
                 <input class="form-control" name="name" placeholder="Name of new language" type="text">
             </label>
-            <div class="col-2">
+            <div class="col-4 col-sm-3 col-md-3 col-lg-2">
                 <button class="btn btn-primary btn-block" type="submit">Add</button>
             </div>
         </div>
@@ -24,10 +24,8 @@
             <tr>
                 <td>
                     <div class="row">
-                        <div class="col-10">Name</div>
-                        <div class="col-2">
-
-                        </div>
+                        <div class="col">Name</div>
+                        <div class="col-4 col-sm-3 col-md-3 col-lg-2"></div>
                     </div>
                 </td>
             </tr>
@@ -36,10 +34,11 @@
             <tr th:each="language :${languages}">
                 <td>
                     <div class="row">
-                        <div class="col-10" th:text="${language.name}"></div>
-                        <div class="col-2">
+                        <div class="col" th:text="${language.name}"></div>
+                        <div class="col-4 col-sm-3 col-md-3 col-lg-2" style="text-align: right">
                             <a class="badge badge-success languageEdit" th:href="@{/languages/find/{id}(id=${language.id})}">edit</a>
                             <a class="badge badge-danger" th:href="@{'/languages/remove/' + ${language.id}}">del</a>
+<!--                            <a data-confirm="Are you sure?" data-method="delete" th:href="@{/languages/{id}(id=${language.id})}" rel="nofollow">Delete</a>-->
                         </div>
                     </div>
                 </td>
@@ -88,7 +87,7 @@
             event.preventDefault();
             var href = $(this).attr('href');
 
-            $.get(href, function (language, status) {
+            $.get(href, function (language) {
                 $('#languageIdInput').val(language.id);
                 $('#languageNameInput').val(language.name);
             });

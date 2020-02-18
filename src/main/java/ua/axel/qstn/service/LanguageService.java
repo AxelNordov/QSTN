@@ -12,9 +12,9 @@ import java.util.stream.StreamSupport;
 @Service
 public class LanguageService {
 
-    private LanguageDAO languageDAO;
-    private WordCardService wordCardService;
-    private QuizCardService quizCardService;
+    final private LanguageDAO languageDAO;
+    final private WordCardService wordCardService;
+    final private QuizCardService quizCardService;
 
     @Autowired
     public LanguageService(LanguageDAO languageDAO, WordCardService wordCardService, QuizCardService quizCardService) {

@@ -10,29 +10,26 @@
 <div class="container mt-3">
 
     <div class="form-row my-2">
-        <div class="col-11"></div>
-        <div class="col-1">
+        <div class="col"></div>
+        <div class="col-4 col-sm-3 col-md-2">
             <!-- Button trigger modal -->
-            <!--            <button class="btn btn-primary btn-block" data-target="#quizAddModal" data-toggle="modal" type="button">-->
-            <button class="btn btn-primary btn-block quizCardEdit" type="button">
-                New
-            </button>
+            <button class="btn btn-primary btn-block quizCardEdit" type="button">New</button>
         </div>
     </div>
 
     <form method="get" th:action="@{/quizCards}">
-        <div class="form-row my-2">
-            <label class="col-9">
+        <div class="form-row my-3 my-sm-2">
+            <label class="col-12 col-sm-6 col-md-7 col-lg-8">
                 <input class="form-control" name="filterQuestion" placeholder="" th:value="${filterQuestion}" type="text">
             </label>
-            <div class="col-2">
+            <div class="col-8 col-sm-3 col-md-3 col-lg-2">
                 <select class="form-control" id="filterLanguage" name="filterLanguageId">
                     <option value="">Все</option>
                     <option th:each="language :${languages}" th:text="${language.name}"
                             th:value="${language.id}"></option>
                 </select>
             </div>
-            <div class="col-1">
+            <div class="col-4 col-sm-3 col-md-2">
                 <button class="btn btn-light btn-block" type="submit">Filter</button>
             </div>
         </div>
@@ -44,9 +41,9 @@
             <tr>
                 <td>
                     <div class="row">
-                        <div class="col-9 mx-0">Question</div>
-                        <div class="col-2 mx-1">Lang</div>
-                        <div class="col-1 mx-1"></div>
+                        <div class="col-12 col-sm-6 col-md-7 col-lg-8">Question</div>
+                        <div class="col-8 col-sm-3 col-md-3 col-lg-2">Lang</div>
+                        <div class="col-4 col-sm-3 col-md-2"></div>
                     </div>
                 </td>
             </tr>
@@ -55,9 +52,9 @@
             <tr th:each="i :${#numbers.sequence(quizCards.size() - 1, 0, -1)}" th:with="quizCard=${quizCards[i]}">
                 <td>
                     <div class="row">
-                        <div class="col-9" th:text="${quizCard.question}"></div>
-                        <div class="col-2" th:text="${quizCard.language.name}"></div>
-                        <div class="col-1" style="text-align: center">
+                        <div class="col-12 col-sm-6 col-md-7 col-lg-8" th:text="${quizCard.question}"></div>
+                        <div class="col-8 col-sm-3 col-md-3 col-lg-2" th:text="${quizCard.language.name}"></div>
+                        <div class="col-4 col-sm-3 col-md-2" style="text-align: right">
                             <a class="badge badge-success quizCardEdit" th:href="@{/quizCards/find/{id}(id=${quizCard.id})}">edit</a>
                             <a class="badge badge-danger" th:href="@{'/quizCards/remove/' + ${quizCard.id}}">del</a>
                         </div>
@@ -92,7 +89,7 @@
                                 <label class="control-label mt-2" for="quizCardQuestionInput">Question</label>
                                 <textarea class="form-control" id="quizCardQuestionInput" name="question" type="text"></textarea>
                                 <label class="control-label mt-2">Options</label>
-                                <div >
+                                <div>
                                     <textarea class="form-control" id="quizCardOptionInput1" name="stringOptions" type="text"></textarea>
                                     <textarea class="form-control" id="quizCardOptionInput2" name="stringOptions" type="text"></textarea>
                                     <textarea class="form-control" id="quizCardOptionInput3" name="stringOptions" type="text"></textarea>
@@ -193,7 +190,7 @@
             event.preventDefault();
             var href = $(this).attr('href');
 
-            $.get(href, function (quizCard, status) {
+            $.get(href, function (quizCard) {
                 $('#quizCardIdInput').val(quizCard.id);
                 $('#quizCardQuestionInput').val(quizCard.question);
                 $('#quizCardLanguageSelect').val(quizCard.language.id);

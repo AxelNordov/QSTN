@@ -12,14 +12,14 @@
     <div class="row mb-3"></div>
     <form method="get" th:action="@{/quizCards/play}">
         <div class="form-row justify-content-md-center">
-            <div class="col-2">
+            <div class="col-8 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                 <select class="form-control" id="filterLanguage" name="filterLanguageId">
                     <option value="">Все</option>
                     <option th:each="language :${languages}" th:text="${language.name}"
                             th:value="${language.id}"></option>
                 </select>
             </div>
-            <div class="col-1">
+            <div class="col-4 col-sm-4 col-md-4 col-lg-3 col-xl-2">
                 <button class="btn btn-primary btn-block" type="submit">Next</button>
             </div>
         </div>
@@ -60,9 +60,8 @@
     $(document).ready(function () {
         var rightBooleanOptions = [[${rightBooleanOptions}]];
 
-        $('.option').on('click', function (event) {
+        $('.option').on('click', function () {
             i = $(this).attr('id').replace('option', '');
-            // alert(rightBooleanOptions);
             if (rightBooleanOptions[i-1]) {
                 $(this).attr('class', 'alert alert-success option');
             } else {

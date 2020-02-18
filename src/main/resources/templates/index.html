@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="Parts/base :: common_header(~{::title},~{})">
     <title>QSTN Main</title>
 </head>
+
 <body>
 <th:block th:insert="~{Parts/base :: navbar}"/>
 <div class="container">
@@ -14,4 +16,5 @@
 </div>
 <th:block th:insert="~{Parts/base :: jslinks}"/>
 </body>
+
 </html>

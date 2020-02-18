@@ -12,7 +12,7 @@ import java.util.Random;
 @Service
 public class WordCardService {
 
-    private WordCardDAO wordCardDAO;
+    final private WordCardDAO wordCardDAO;
 
     @Autowired
     public WordCardService(WordCardDAO wordCardDAO) {
@@ -53,7 +53,7 @@ public class WordCardService {
 
     public WordCard getRandomWordCard(List<WordCard> wordCards) {
         Random random = new Random();
-        WordCard wordCard = null;
+        WordCard wordCard;
         if (!wordCards.isEmpty()) {
             wordCard = wordCards.get(random.nextInt(wordCards.size()));
         } else {

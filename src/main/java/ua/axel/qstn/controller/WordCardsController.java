@@ -93,10 +93,11 @@ public class WordCardsController {
 
     @PostMapping("/addFromFile")
     public String addFromFile(@RequestParam("file") MultipartFile file, @RequestParam Long languageId) throws IOException {
+        final FileService fileService = new FileService();
         if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty() && languageId != null) {
-            File fileOnDisk = FileService.writeFileOnDisk(file);
+            File fileOnDisk = fileService.writeFileOnDisk(file);
             Language language = languageService.findById(languageId);
-            List<WordCard> newWordCards = FileService.parseFileToWordCards(fileOnDisk, language);
+            List<WordCard> newWordCards = fileService.parseFileToWordCards(fileOnDisk, language);
             wordCardService.saveAll(newWordCards);
         }
         return "redirect:/wordCards";
